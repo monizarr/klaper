@@ -93,6 +93,8 @@ vendor/
 # Modules Testing
 _modules/*
 
+/public/uploads/*
+
 # phpenv local config
 .php-version
 
