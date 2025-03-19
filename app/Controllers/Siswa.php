@@ -50,6 +50,16 @@ class Siswa extends BaseController
         return $this->response->setJSON($response);
     }
 
+    public function getSiswaAngkatan($angkatan)
+    {
+        $mSiswa = new ModelSiswa();
+
+        $user  = session()->get('user');
+        $siswa = $mSiswa->where('id_sekolah', $user['sekolah']['id'])->where('masuk', $angkatan)->findAll();
+
+        return $this->response->setJSON($siswa);
+    }
+
     public function deleteSiswa($id)
     {
         $mSiswa = new ModelSiswa();

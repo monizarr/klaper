@@ -40,9 +40,32 @@ class Dashboard extends BaseController
         $mKelas = new ModelKelas();
 
         $user  = session()->get('user');
-        // if   
         $kelas = $mKelas->where('id_sekolah', $user['sekolah']['id'])->findAll();
         $siswa = $mSiswa->where('id_sekolah', $user['sekolah']['id'])->findAll();
+        $tahun = $mSiswa->select('masuk')->where('id_sekolah', $user['sekolah']['id'])->distinct()->findAll();
+
+        helper(['form']);
+
+        $data = [
+            'title' => 'Manajemen Siswa',
+            'content' => 'sekolah/v_msiswa',
+            'apath' => 'mSiswa',
+            'siswa' => $siswa,
+            'user' => $user,
+            'angkatan' => $tahun
+        ];
+
+        return view('layouts/v_wrapper', $data);
+    }
+
+    public function mSiswaByAngkatan($angkatan)
+    {
+        $mSiswa = new ModelSiswa();
+        $mKelas = new ModelKelas();
+
+        $user  = session()->get('user');
+        $kelas = $mKelas->where('id_sekolah', $user['sekolah']['id'])->findAll();
+        $siswa = $mSiswa->where('id_sekolah', $user['sekolah']['id'])->where('masuk', $angkatan)->findAll();
         $tahun = $mSiswa->select('masuk')->where('id_sekolah', $user['sekolah']['id'])->distinct()->findAll();
 
         helper(['form']);
@@ -57,9 +80,96 @@ class Dashboard extends BaseController
             'angkatan' => $tahun
         ];
 
-        // dd($data);
         return view('layouts/v_wrapper', $data);
     }
+
+    public function mAkademis()
+    {
+        if (session()->get('user') == null) {
+            return redirect()->to('/sekolah/login');
+        }
+
+        $mSiswa = new ModelSiswa();
+        $mKelas = new ModelKelas();
+
+        $user  = session()->get('user');
+        $kelas = $mKelas->where('id_sekolah', $user['sekolah']['id'])->findAll();
+        $siswa = $mSiswa->where('id_sekolah', $user['sekolah']['id'])->findAll();
+        $tahun = $mSiswa->select('masuk')->where('id_sekolah', $user['sekolah']['id'])->distinct()->orderBY('masuk', 'DESC')->findAll();
+
+        helper(['form']);
+
+        $data = [
+            'title' => 'Manajemen Siswa',
+            'content' => 'sekolah/akademis/v_index',
+            'apath' => 'mSiswa',
+            'siswa' => $siswa,
+            'user' => $user,
+            'angkatan' => $tahun
+        ];
+
+        return view('layouts/v_wrapper', $data);
+    }
+
+    public function mAkademisAngkatan($angkatan)
+    {
+        if (session()->get('user') == null) {
+            return redirect()->to('/sekolah/login');
+        }
+
+        $mSiswa = new ModelSiswa();
+        $mKelas = new ModelKelas();
+
+        $user  = session()->get('user');
+        $kelas = $mKelas->where('id_sekolah', $user['sekolah']['id'])->findAll();
+        $siswa = $mSiswa->where('id_sekolah', $user['sekolah']['id'])->where('masuk', $angkatan)->findAll();
+        $tahun = $mSiswa->select('masuk')->where('id_sekolah', $user['sekolah']['id'])->distinct()->findAll();
+
+        helper(['form']);
+
+        $data = [
+            'title' => 'Data Akademis Angkatan ' . $angkatan,
+            'content' => 'sekolah/akademis/v_angkatan',
+            'apath' => 'mSiswa',
+            'user' => $user,
+            'siswa' => $siswa,
+            'angkatan' => $tahun
+        ];
+
+        return view('layouts/v_wrapper', $data);
+    }
+
+    public function mPrestasi()
+    {
+
+        if (session()->get('user') == null) {
+            return redirect()->to('/sekolah/login');
+        }
+
+        $mSiswa = new ModelSiswa();
+        $mKelas = new ModelKelas();
+
+        $user  = session()->get('user');
+        $kelas = $mKelas->where('id_sekolah', $user['sekolah']['id'])->findAll();
+        $siswa = $mSiswa->where('id_sekolah', $user['sekolah']['id'])->findAll();
+        $tahun = $mSiswa->select('masuk')->where('id_sekolah', $user['sekolah']['id'])->distinct()->findAll();
+
+        helper(['form']);
+
+        $data = [
+            'title' => 'Manajemen Siswa',
+            'content' => 'sekolah/v_mprestasi',
+            'apath' => 'mSiswa',
+            'siswa' => $siswa,
+            'user' => $user,
+            'angkatan' => $tahun
+        ];
+
+        return view('layouts/v_wrapper', $data);
+    }
+
+
+
 
     public function getSiswa()
     {
@@ -110,6 +220,50 @@ class Dashboard extends BaseController
         return $this->response->setJSON($response);
     }
 
+    public function getSiswaByAngkatan($angkatan)
+    {
+        $model = new ModelSiswa();
+
+        // Ambil parameter dari request DataTables
+        $start = $this->request->getVar('start');
+        $length = $this->request->getVar('length');
+        $draw = $this->request->getVar('draw');
+        $searchValue = $this->request->getVar('search')['value'] ?? '';
+        $order = $this->request->getVar('order')[0];
+
+        // Query builder
+        $builder = $model->builder();
+        $builder->where('id_sekolah', session()->get('user')['sekolah']['id']);
+        $builder->where('masuk', $angkatan);
+
+        // Filter pencarian jika ada
+        if (!empty($searchValue)) {
+            $builder->like('nama', $searchValue); // Misalnya pencarian berdasarkan nama
+        }
+
+        // Hitung total record sebelum limit
+        $totalRecords = $builder->countAllResults(false);
+
+        // order
+        $builder->orderBy('nama', $order['dir']);
+
+        // Ambil data dengan limit dan offset
+        $data = $builder->limit($length, $start)->get()->getResult();
+
+        // Hitung total record yang sesuai filter pencarian
+        $totalFilteredRecords = count($data);
+
+        // Format data untuk DataTables
+        $response = [
+            'draw' => intval($draw),
+            'recordsTotal' => $totalRecords,
+            'recordsFiltered' => $totalFilteredRecords,
+            'data' => $data
+        ];
+
+        return $this->response->setJSON($response);
+    }
+
 
     public function addSiswa()
     {
@@ -129,6 +283,13 @@ class Dashboard extends BaseController
             'keluar' => $this->request->getPost('keluar'),
         ];
 
+        $buktiMasuk = $this->request->getFile('bukti_masuk');
+        if ($buktiMasuk->isValid() && !$buktiMasuk->hasMoved()) {
+            $newName = $buktiMasuk->getRandomName();
+            $buktiMasuk->move(ROOTPATH, $newName);
+            $data['bukti_masuk'] = $newName;
+        }
+
         $simpanSiswa = $siswa->insert($data);
 
         if ($simpanSiswa) {
@@ -144,7 +305,7 @@ class Dashboard extends BaseController
 
             //set flashdata
             session()->setFlashdata('success', 'Data siswa berhasil ditambahkan');
-            return redirect()->to('/sekolah/siswa');
+            return redirect()->back();
         }
     }
 

@@ -57,7 +57,7 @@
                 <a class="btn-close" data-bs-dismiss="alert" aria-label="close"></a>
             </div>
         <?php elseif (session()->getFlashdata('error')) : ?>
-            <div class="alert alert-success alert-dismissible" role="alert">
+            <div class="alert alert-danger alert-dismissible" role="alert">
                 <div class="d-flex">
                     <div>
                         <!-- Download SVG icon from http://tabler-icons.io/i/check -->
@@ -209,249 +209,128 @@
                     <h5 class="modal-title" id="modal-edit-label-<?= $s['id'] ?>">Edit Siswa</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <ul class="nav nav-tabs" id="tabs-<?= $s['id'] ?>" role="tablist">
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="tabs-home-tab-<?= $s['id'] ?>" data-bs-toggle="tab" data-bs-target="#tabs-home-<?= $s['id'] ?>" type="button" role="tab" aria-controls="tabs-home-<?= $s['id'] ?>" aria-selected="true">Profil Siswa</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="tabs-profile-tab-<?= $s['id'] ?>" data-bs-toggle="tab" data-bs-target="#tabs-profile-<?= $s['id'] ?>" type="button" role="tab" aria-controls="tabs-profile-<?= $s['id'] ?>" aria-selected="false">Riwayat Akademis</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="tabs-lulus-tab-<?= $s['id'] ?>" data-bs-toggle="tab" data-bs-target="#tabs-lulus-<?= $s['id'] ?>" type="button" role="tab" aria-controls="tabs-lulus-<?= $s['id'] ?>" aria-selected="false">Siswa Lulus</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="tabs-pindah-tab-<?= $s['id'] ?>" data-bs-toggle="tab" data-bs-target="#tabs-pindah-<?= $s['id'] ?>" type="button" role="tab" aria-controls="tabs-pindah-<?= $s['id'] ?>" aria-selected="false">Siswa Pindah</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="tabs-keluar-tab-<?= $s['id'] ?>" data-bs-toggle="tab" data-bs-target="#tabs-keluar-<?= $s['id'] ?>" type="button" role="tab" aria-controls="tabs-keluar-<?= $s['id'] ?>" aria-selected="false">Siswa Putus Sekolah</button>
-                        </li>
-                    </ul>
-                    <div class="tab-content" id="tabs-content-<?= $s['id'] ?>">
-                        <div class="tab-pane fade show active" id="tabs-home-<?= $s['id'] ?>" role="tabpanel" aria-labelledby="tabs-home-tab-<?= $s['id'] ?>">
-                            <form action="<?= site_url('/sekolah/edit-siswa') ?>" method="post" class="modal-content">
-                                <!-- <div class="modal-header">
-                                    <h5 class="modal-title">Edit Siswa</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div> -->
-                                <div class="modal-body">
-                                    <input type="text" hidden name="id" value="<?= $s['id'] ?>">
+                <div class="modal-body p-0">
+                    <form action="<?= site_url('/sekolah/edit-siswa') ?>" method="post" class="modal-content">
+                        <div class="modal-body">
+                            <input type="text" hidden name="id" value="<?= $s['id'] ?>">
+                            <div class="mb-3">
+                                <label class="form-label">NIS</label>
+                                <input type="number" class="form-control" name="nis" placeholder="Nomor Induk Siswa" value="<?= $s['nis'] ?>">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Nama</label>
+                                <input type="text" class="form-control" name="nama" placeholder="Masukan nama lengkap" value="<?= $s['nama'] ?>">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Jenis Kelamin</label>
+                                <select class="form-select" name="jk">
+                                    <option value="L" <?= $s['jk'] == 'L' ? 'selected' : '' ?>>L</option>
+                                    <option value="P" <?= $s['jk'] == 'P' ? 'selected' : '' ?>>P</option>
+                                </select>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-lg-6">
+                                    <label class="form-label">Tempat Lahir</label>
+                                    <input type="text" class="form-control" name="tempat_lahir" placeholder="Tempat Lahir" value="<?= $s['tempat_lahir'] ?>">
+                                </div>
+                                <div class="col-lg-6">
+                                    <label class="form-label">Tanggal Lahir</label>
+                                    <input type="date" class="form-control" name="tgl_lahir" value="<?= $s['tgl_lahir'] ?>">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="mb-3">
+                                    <label class="form-label">Status Masuk</label>
+                                    <select class="form-select" name="status_masuk">
+                                        <option value="ppdb" <?= $s['status_masuk'] == 'ppdb' ? 'selected' : '' ?>>PPDB</option>
+                                        <option value="pindahan" <?= $s['status_masuk'] == 'pindahan' ? 'selected' : '' ?>>Pindahan</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Orang Tua</label>
+                                <input type="text" class="form-control" name="ortu" placeholder="Nama Ayah / Ibu" value="<?= $s['orang_tua'] ?>">
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
                                     <div class="mb-3">
-                                        <label class="form-label">NIS</label>
-                                        <input type="number" class="form-control" name="nis" placeholder="Nomor Induk Siswa" value="<?= $s['nis'] ?>">
+                                        <label class="form-label">Tahun Masuk</label>
+                                        <input type="number" step="1" name="masuk" class="form-control" value="<?= $s['masuk'] ?>">
                                     </div>
+                                </div>
+                                <div class="col-lg-6">
                                     <div class="mb-3">
-                                        <label class="form-label">Nama</label>
-                                        <input type="text" class="form-control" name="nama" placeholder="Masukan nama lengkap" value="<?= $s['nama'] ?>">
+                                        <label class="form-label">Keluar</label>
+                                        <input type="number" step="1" <?= $s['keluar'] == null ? 'disabled' : '' ?> name="keluar" class="form-control" value="<?= $s['keluar'] ?>">
                                     </div>
+                                </div>
+                            </div>
+                            <?php if ($s['status_keluar'] != null) : ?>
+                                <div class="col-lg-12">
                                     <div class="mb-3">
-                                        <label class="form-label">Jenis Kelamin</label>
-                                        <select class="form-select" name="jk">
-                                            <option value="L" <?= $s['jk'] == 'L' ? 'selected' : '' ?>>L</option>
-                                            <option value="P" <?= $s['jk'] == 'P' ? 'selected' : '' ?>>P</option>
+                                        <label class="form-label"> Status Keluar</label>
+                                        <select class="form-select" name="status_keluar">
+                                            <option value="lulus" <?= $s['status_keluar'] == 'lulus' ? 'selected' : '' ?>>Lulus</option>
+                                            <option value="pindah" <?= $s['status_keluar'] == 'pindah' ? 'selected' : '' ?>>Pindah</option>
+                                            <option value="do" <?= $s['status_keluar'] == 'do' ? 'selected' : '' ?>>Putus Sekolah</option>
                                         </select>
                                     </div>
-                                    <div class="row mb-3">
-                                        <div class="col-lg-6">
-                                            <label class="form-label">Tempat Lahir</label>
-                                            <input type="text" class="form-control" name="tempat_lahir" placeholder="Tempat Lahir" value="<?= $s['tempat_lahir'] ?>">
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <label class="form-label">Tanggal Lahir</label>
-                                            <input type="date" class="form-control" name="tgl_lahir" value="<?= $s['tgl_lahir'] ?>">
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="mb-3">
-                                            <label class="form-label">Status Masuk</label>
-                                            <select class="form-select" name="status_masuk">
-                                                <option value="ppdb" <?= $s['status_masuk'] == 'ppdb' ? 'selected' : '' ?>>PPDB</option>
-                                                <option value="pindahan" <?= $s['status_masuk'] == 'pindahan' ? 'selected' : '' ?>>Pindahan</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label">Orang Tua</label>
-                                        <input type="text" class="form-control" name="ortu" placeholder="Nama Ayah / Ibu" value="<?= $s['orang_tua'] ?>">
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label">Tahun Masuk</label>
-                                                <input type="number" step="1" name="masuk" class="form-control" value="<?= $s['masuk'] ?>">
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label class="form-label">Keluar</label>
-                                                <input type="number" step="1" <?= $s['keluar'] == null ? 'disabled' : '' ?> name="keluar" class="form-control" value="<?= $s['keluar'] ?>">
-                                            </div>
-                                        </div>
-                                    </div>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                        <?php if ($s['bukti_masuk'] != null) : ?>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <!-- preview image -->
                                     <div class="col-lg-12">
                                         <div class="mb-3">
-                                            <label class="form-label"> Status Keluar</label>
-                                            <select class="form-select" name="status_keluar">
-                                                <option value="lulus" <?= $s['status_keluar'] == 'lulus' ? 'selected' : '' ?>>Lulus</option>
-                                                <option value="pindah" <?= $s['status_keluar'] == 'pindah' ? 'selected' : '' ?>>Pindah</option>
-                                                <option value="do" <?= $s['status_keluar'] == 'do' ? 'selected' : '' ?>>Putus Sekolah</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <?php if ($s['bukti_masuk'] != null) : ?>
-                                    <div class="modal-body">
-                                        <div class="row">
-                                            <!-- preview image -->
-                                            <div class="col-lg-12">
-                                                <div class="mb-3">
-                                                    <label class="form-label w-100">Surat Penerimaan Siswa</label>
-                                                    <!-- image/pdf -->
-                                                    <?php if (pathinfo($s['bukti_masuk'], PATHINFO_EXTENSION) == 'pdf') : ?>
-                                                        <embed src="<?= base_url(UPLOAD_PATH . '/' . $s['bukti_masuk']) ?>" type="application/pdf" width="100%" height="600px" />
-                                                    <?php else : ?>
-                                                        <img src="<?= base_url(UPLOAD_PATH . '/' . $s['bukti_masuk']) ?>" class="img-fluid" alt="bukti" />
-                                                    <?php endif; ?>
+                                            <label class="form-label w-100">Surat Penerimaan Siswa</label>
+                                            <!-- image/pdf -->
+                                            <?php if (pathinfo($s['bukti_masuk'], PATHINFO_EXTENSION) == 'pdf') : ?>
+                                                <embed src="<?= base_url(UPLOAD_PATH . '/' . $s['bukti_masuk']) ?>" type="application/pdf" width="100%" height="600px" />
+                                            <?php else : ?>
+                                                <img src="<?= base_url(UPLOAD_PATH . '/' . $s['bukti_masuk']) ?>" class="img-fluid" alt="bukti" />
+                                            <?php endif; ?>
 
-                                                </div>
-                                            </div>
                                         </div>
                                     </div>
-                                <?php endif; ?>
-                                <?php if ($s['keluar'] != null) : ?>
-                                    <div class="modal-body">
-                                        <div class="row">
-                                            <!-- preview image -->
-                                            <div class="col-lg-12">
-                                                <div class="mb-3">
-                                                    <label class="form-label w-100">Surat Alumni</label>
-                                                    <!-- image/pdf -->
-                                                    <?php if (pathinfo($s['bukti_keluar'], PATHINFO_EXTENSION) == 'pdf') : ?>
-                                                        <embed src="<?= base_url(UPLOAD_PATH . '/' . $s['bukti_keluar']) ?>" type="application/pdf" width="100%" height="600px" />
-                                                    <?php else : ?>
-                                                        <img src="<?= base_url(UPLOAD_PATH . '/' . $s['bukti_keluar']) ?>" class="img-fluid" alt="bukti" />
-                                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                        <?php if ($s['keluar'] != null) : ?>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <!-- preview image -->
+                                    <div class="col-lg-12">
+                                        <div class="mb-3">
+                                            <label class="form-label w-100">Surat Alumni</label>
+                                            <!-- image/pdf -->
+                                            <?php if (pathinfo($s['bukti_keluar'], PATHINFO_EXTENSION) == 'pdf') : ?>
+                                                <embed src="<?= base_url(UPLOAD_PATH . '/' . $s['bukti_keluar']) ?>" type="application/pdf" width="100%" height="600px" />
+                                            <?php else : ?>
+                                                <img src="<?= base_url(UPLOAD_PATH . '/' . $s['bukti_keluar']) ?>" class="img-fluid" alt="bukti" />
+                                            <?php endif; ?>
 
-                                                </div>
-                                            </div>
                                         </div>
                                     </div>
-                                <?php endif; ?>
-                                <div class="modal-footer">
-                                    <a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">
-                                        Cancel
-                                    </a>
-                                    <button type="submit" class="btn btn-primary ms-auto">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-edit">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                            <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
-                                            <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" />
-                                            <path d="M16 5l3 3" />
-                                        </svg>
-                                        Ubah
-                                    </button>
                                 </div>
-                            </form>
+                            </div>
+                        <?php endif; ?>
+                        <div class="modal-footer">
+                            <a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">
+                                Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary ms-auto">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-edit">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                    <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
+                                    <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" />
+                                    <path d="M16 5l3 3" />
+                                </svg>
+                                Ubah
+                            </button>
                         </div>
-                        <div class="tab-pane fade" id="tabs-profile-<?= $s['id'] ?>" role="tabpanel" aria-labelledby="tabs-profile-tab-<?= $s['id'] ?>">
-                            <div class="mt-4" id="academic-history-<?= $s['id'] ?>">Memuat data...</div>
-                        </div>
-                        <div class="tab-pane fade" id="tabs-lulus-<?= $s['id'] ?>" role="tabpanel" aria-labelledby="tabs-lulus-tab-<?= $s['id'] ?>">
-                            <form action="<?= site_url('/sekolah/upload-ijazah'); ?>" method="post" enctype="multipart/form-data">
-                                <?= csrf_field() ?>
-                                <!-- <div class="modal-header">
-                                    <h5 class="modal-title">Edit Siswa</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div> -->
-                                <div class="modal-body">
-                                    <input type="text" hidden name="id" value="<?= $s['id'] ?>" required>
-                                    <div class="col-lg-12">
-                                        <div class="mb-3">
-                                            <label class="form-label w-100">Ijazah</label>
-                                            <input type="file" class="form-control" name="bukti_keluar">
-                                        </div>
-                                    </div>
-                                    <!-- submit -->
-                                    <button type="submit" class="btn btn-primary ms-auto" <?= ($s['status_keluar'] != 'lulus' && $s['status_keluar'] != null) ? 'disabled' : '' ?>>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-edit">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                            <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
-                                            <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" />
-                                            <path d="M16 5l3 3" />
-                                        </svg>
-                                        Simpan
-                                    </button>
-                                </div>
-                                <!-- <div class="modal-footer">
-                                    <a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">
-                                        Cancel
-                                    </a>
-                                    <button type="submit" class="btn btn-primary ms-auto">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-edit">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                            <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
-                                            <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" />
-                                            <path d="M16 5l3 3" />
-                                        </svg>
-                                        Ubah
-                                    </button>
-                                </div> -->
-                            </form>
-                        </div>
-                        <div class="tab-pane fade" id="tabs-pindah-<?= $s['id'] ?>" role="tabpanel" aria-labelledby="tabs-pindah-tab-<?= $s['id'] ?>">
-                            <form action="<?= site_url('/sekolah/upload-spindah'); ?>" method="post" enctype="multipart/form-data">
-                                <?= csrf_field() ?>
-                                <!-- <div class="modal-header">
-                                    <h5 class="modal-title">Edit Siswa</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div> -->
-                                <div class="modal-body">
-                                    <input type="text" hidden name="id" value="<?= $s['id'] ?>">
-                                    <div class="col-lg-12">
-                                        <div class="mb-3">
-                                            <label class="form-label w-100">Surat Pindah</label>
-                                            <input type="file" class="form-control" name="bukti_keluar">
-                                        </div>
-                                    </div>
-                                    <!-- submit -->
-                                    <button type="submit" class="btn btn-primary ms-auto" <?= ($s['status_keluar'] != 'pindah' && $s['status_keluar'] != null) ? 'disabled' : '' ?>>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-edit">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                            <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
-                                            <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" />
-                                            <path d="M16 5l3 3" />
-                                        </svg>
-                                        Simpan
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="tab-pane fade" id="tabs-keluar-<?= $s['id'] ?>" role="tabpanel" aria-labelledby="tabs-keluar-tab-<?= $s['id'] ?>">
-                            <form action="<?= site_url('/sekolah/upload-skeluar'); ?>" method="post" enctype="multipart/form-data">
-                                <?= csrf_field() ?>
-                                <div class="modal-body">
-                                    <input type="text" hidden name="id" value="<?= $s['id'] ?>">
-                                    <div class="col-lg-12">
-                                        <div class="mb-3">
-                                            <label class="form-label w-100">Surat Keterangan Putus Sekolah</label>
-                                            <input type="file" class="form-control" name="bukti_keluar">
-                                        </div>
-                                    </div>
-                                    <!-- submit -->
-                                    <button type="submit" class="btn btn-primary ms-auto" <?= ($s['status_keluar'] != 'pindah' && $s['status_keluar'] != null) ? 'disabled' : '' ?>>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-edit">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                            <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
-                                            <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" />
-                                            <path d="M16 5l3 3" />
-                                        </svg>
-                                        Simpan
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -486,129 +365,6 @@
         modal.addEventListener('show.bs.modal', function(event) {
             const siswaId = this.id.split('-')[2]; // Ambil ID siswa dari ID modal (e.g., 'modal-edit-2')
             console.log("Siswa ID : ", siswaId);
-            fetch(`http://localhost:8080/siswa/get-kelas-siswa/${siswaId}`)
-                .then(response => response.json())
-                .then(result => {
-                    const data = result.data;
-                    const targetDiv = document.querySelector(`#tabs-profile-${siswaId}`);
-
-                    console.log(data);
-
-                    const kelasPlus = parseInt(data[data.length - 1]['kelas']) + 1;
-                    const kelasTerakhir = parseInt(data[data.length - 1]['kelas']) + 1;
-
-                    const isLulus = data[data.length - 1]['bukti'] != null && data[data.length - 1]['status_keluar'] == 'lulus';
-                    const isPindah = data[data.length - 1]['bukti'] != null && data[data.length - 1]['status_keluar'] == 'pindah';
-                    const isDo = data[data.length - 1]['bukti'] != null && data[data.length - 1]['status_keluar'] == 'do';
-
-                    if (Array.isArray(data) && data.length > 0) {
-                        targetDiv.innerHTML = `
-                        <div class="mt-4 row">
-                            <form method="post" class="col-md-6" action="<?= site_url('/kelas/add') ?>" >
-                                <input type="text" hidden class="form-control" name="id_siswa" required value="${siswaId}" placeholder="Tahun Ajaran">
-                                <input type="text" hidden class="form-control" name="id_sekolah" required value="<?= $user['sekolah']['id'] ?>" placeholder="Tahun Ajaran">
-                                <div class="row" hidden>
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label">Kelas</label>
-                                            <input type="text" class="form-control" name="kelas" required placeholder="Kelas" value="${kelasPlus}">
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label">Tahun Ajaran</label>
-                                            <input type="text" class="form-control" name="ta" required placeholder="Tahun Ajaran" value="<?= date('Y') ?>">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-12">
-                                    <div class="mb-3">
-                                        <button type="submit" class="btn btn-primary w-full" ${isLulus || isPindah ||isDo ? 'disabled' : ''}>
-                                        <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-arrow-badge-up"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M17 11v6l-5 -4l-5 4v-6l5 -4z" /></svg>
-                                        Naik Kelas
-                                        </button>
-                                    </div>
-                                </div>
-                            </form>
-                            <form method="post" class="col-md-6 mb-2" action="<?= site_url('/kelas/add') ?>" >
-                                <input type="text" hidden class="form-control" name="id_siswa" required value="${siswaId}" placeholder="Tahun Ajaran">
-                                <input type="text" hidden class="form-control" name="id_sekolah" required value="<?= $user['sekolah']['id'] ?>" placeholder="Tahun Ajaran">
-                                <div class="row" hidden>
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label">Kelas</label>
-                                            <input type="text" class="form-control" name="kelas" required placeholder="Kelas" value="${kelasTerakhir}">
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label">Tahun Ajaran</label>
-                                            <input type="text" class="form-control" name="ta" required placeholder="Tahun Ajaran" value="<?= date('Y') ?>">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-12">
-                                    <div class="mb-3">
-                                        <button type="submit" class="btn btn-primary w-full" ${isLulus || isPindah ||isDo ? 'disabled' : ''} >
-                                        <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-arrow-badge-down"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M17 13v-6l-5 4l-5 -4v6l5 4z" /></svg>
-                                        Tinggal Kelas
-                                        </button>
-                                    </div>
-                                </div>
-                            </form>
-
-                            <hr />
-                            <h4>Riwayat Kelas</h4>
-                            <table class="table table-bordered table-striped mt-2">
-                                <thead>
-                                    <tr>
-                                        <th>Kelas</th>
-                                        <th>Tahun Ajaran</th>
-                                        <th>Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${data.map((item, index) => `
-                                    <tr>
-                                        <td>
-                                            <input type="text" class="form-control" name="kelas-${item.id}" id="kelas-${item.id}" value="${item.kelas}" placeholder="Kelas">
-                                        </td>
-                                        <td>
-                                            <input type="text" class="form-control" name="ta-${item.id}" id="ta-${item.id}" value="${item.ta}" placeholder="Tahun Ajaran">
-                                        </td>
-                                        <td>
-                                            <button 
-                                                class="btn btn-primary" 
-                                                onclick="updateRow(${item.id})">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon m-0 icon-tabler icons-tabler-outline icon-tabler-edit">
-                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                                    <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
-                                                    <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" />
-                                                    <path d="M16 5l3 3" />
-                                                </svg>
-                                            </button>
-                                            <button 
-                                                class="btn btn-neutral" 
-                                                onclick="deleteRow(${item.id})">
-                                                <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon m-0 icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
-                                                </svg>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>
-                        </div>
-                        `;
-                    } else {
-                        targetDiv.innerHTML = '<p class="mt-4">Data tidak ditemukan.</p>';
-                    }
-
-                })
-                .catch(error => {
-                    const targetDiv = document.querySelector(`#tabs-profile-${siswaId}`);
-                    targetDiv.innerHTML = `<p>Terjadi kesalahan: ${error.message}</p>`;
-                });
         });
     });
 
