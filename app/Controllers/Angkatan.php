@@ -19,9 +19,9 @@ class Angkatan extends BaseController
         $modelAngkatan = new \App\Models\Angkatan();
         $data = [
             'angkatan' => $this->request->getPost('angkatan'),
-            'deskripsi' => $this->request->getPost('deskripsi')
+            'deskripsi' => $this->request->getPost('deskripsi'),
+            'id_sekolah' => $this->request->getPost('id_sekolah')
         ];
-
         $modelAngkatan->insert($data);
         session()->setFlashdata('success', 'Data angkatan berhasil ditambahkan');
         return redirect()->back();

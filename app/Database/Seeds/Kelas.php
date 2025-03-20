@@ -13,7 +13,7 @@ class Kelas extends Seeder
                 'id_siswa' => 1,
                 'id_sekolah' => 1,
                 'kelas' => '1',
-                'ta' => '2020',
+                'ta' => '1',
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s')
             ],
@@ -21,7 +21,7 @@ class Kelas extends Seeder
                 'id_siswa' => 2,
                 'id_sekolah' => 1,
                 'kelas' => '1',
-                'ta' => '2020',
+                'ta' => '1',
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s')
             ],
@@ -29,7 +29,7 @@ class Kelas extends Seeder
                 'id_siswa' => 3,
                 'id_sekolah' => 2,
                 'kelas' => '1',
-                'ta' => '2020',
+                'ta' => '1',
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s')
             ],
@@ -37,7 +37,7 @@ class Kelas extends Seeder
                 'id_siswa' => 4,
                 'id_sekolah' => 2,
                 'kelas' => '1',
-                'ta' => '2020',
+                'ta' => '3',
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s')
             ]

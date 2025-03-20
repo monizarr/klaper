@@ -88,6 +88,7 @@ class Siswa extends Migration
         ]);
         $this->forge->addKey('id', true);
         $this->forge->addForeignKey('id_sekolah', 'sekolah', 'id', 'CASCADE', 'CASCADE');
+        $this->forge->addForeignKey('masuk', 'angkatan', 'id', 'CASCADE', 'CASCADE');
         $this->forge->createTable('siswa');
 
         $seeder = \Config\Database::seeder();

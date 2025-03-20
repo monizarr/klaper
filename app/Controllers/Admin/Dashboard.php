@@ -14,10 +14,6 @@ class Dashboard extends BaseController
 
     public function index()
     {
-        if (session()->get('user') == null) {
-            return redirect()->to('/admin/login');
-        }
-
         $data = [
             'title' => 'Dashboard',
             'content' => 'adminapp/v_index'
@@ -27,10 +23,6 @@ class Dashboard extends BaseController
 
     public function mSekolah()
     {
-        if (session()->get('user') == null) {
-            return redirect()->to('/admin/login');
-        }
-
         $mSekolah = new ModelSekolah();
 
         $encrypter = \Config\Services::encrypter();
@@ -83,9 +75,6 @@ class Dashboard extends BaseController
 
     public function mSiswa()
     {
-        if (session()->get('user') == null) {
-            return redirect()->to('/admin/login');
-        }
         $mSiswa = new ModelSiswa();
         $mSekolah = new ModelSekolah();
         $tahun = $mSiswa->select('masuk')->distinct()->findAll();

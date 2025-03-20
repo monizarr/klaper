@@ -11,15 +11,18 @@ class Angkatan extends Seeder
         $data = [
             [
                 'angkatan' => 2020,
-                'deskripsi' => 'Angkatan 2020'
+                'deskripsi' => 'Angkatan 2020',
+                'id_sekolah' => '1',
             ],
             [
                 'angkatan' => 2021,
-                'deskripsi' => 'Angkatan 2021'
+                'deskripsi' => 'Angkatan 2021',
+                'id_sekolah' => '1',
             ],
             [
                 'angkatan' => 2022,
-                'deskripsi' => 'Angkatan 2022'
+                'deskripsi' => 'Angkatan 2022',
+                'id_sekolah' => '1',
             ],
         ];
 

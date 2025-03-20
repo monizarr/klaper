@@ -14,7 +14,8 @@ class Angkatan extends Model
     protected $protectFields    = true;
     protected $allowedFields    = [
         'angkatan',
-        'deskripsi'
+        'deskripsi',
+        'id_sekolah'
     ];
 
     protected bool $allowEmptyInserts = false;

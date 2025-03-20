@@ -24,10 +24,19 @@ class Angkatan extends Migration
                 'type' => 'TEXT',
                 'null' => true,
             ],
+            'id_sekolah' => [
+                'type' => 'INT',
+                'constraint' => 5,
+                'unsigned' => true,
+            ],
         ]);
 
         $this->forge->addKey('id', true);
         $this->forge->createTable('angkatan');
+        $this->forge->addForeignKey('id_sekolah', 'sekolah', 'id', 'CASCADE', 'CASCADE');
+
+        $seeder = \Config\Database::seeder();
+        $seeder->call(AngkatanSeeder::class);
     }
 
     public function down()

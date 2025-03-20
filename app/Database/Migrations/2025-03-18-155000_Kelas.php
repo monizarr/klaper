@@ -31,7 +31,9 @@ class Kelas extends Migration
                 'constraint' => 10,
             ],
             'ta' => [
-                'type' => 'YEAR',
+                'type' => 'INT',
+                'constraint' => 11,
+                'unsigned' => true
             ],
             'created_at' => [
                 'type' => 'DATETIME',
@@ -45,6 +47,7 @@ class Kelas extends Migration
         $this->forge->addKey('id', true);
         $this->forge->addForeignKey('id_siswa', 'siswa', 'id', 'CASCADE', 'CASCADE');
         $this->forge->addForeignKey('id_sekolah', 'sekolah', 'id', 'CASCADE', 'CASCADE');
+        $this->forge->addForeignKey('ta', 'angkatan', 'id', 'CASCADE', 'CASCADE');
         $this->forge->createTable('kelas');
 
         $seeder = \Config\Database::seeder();

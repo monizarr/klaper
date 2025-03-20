@@ -38,11 +38,12 @@ $routes->group('kelas', function ($routes) {
     $routes->post('add', 'Kelas::add');
     $routes->post('update/(:num)', 'Kelas::update/$1');
     $routes->post('delete/(:num)', 'Kelas::delete/$1');
+    $routes->get('get-kelas-ajax', 'Kelas::getKelasSiswa');
+    $routes->get('get-kelas-ajax/(:num)', 'Kelas::getKelasSiswaByTa/$1');
 });
 
-$routes->group('sekolah', function ($routes) {
+$routes->group('sekolah', ['filter' => 'authsekolah'], function ($routes) {
     $routes->get('/', 'Sekolah\Dashboard::index');
-
     $routes->get('dashboard', 'Sekolah\Dashboard::index');
     $routes->get('get-siswa', 'Sekolah\Dashboard::getSiswa');
     $routes->get('get-siswa/(:num)', 'Sekolah\Dashboard::getSiswa/$1');
@@ -50,9 +51,13 @@ $routes->group('sekolah', function ($routes) {
     $routes->post('edit-siswa', 'Sekolah\Dashboard::editSiswa');
     $routes->get('bulk-siswa', 'Sekolah\Dashboard::bulkSiswa');
     $routes->post('save-bulk-siswa', 'Sekolah\Dashboard::saveBulkSiswa');
-    $routes->get('siswa', 'Sekolah\Dashboard::mSiswa');
-    $routes->get('siswa-angkatan/(:num)', 'Sekolah\Dashboard::mSiswaByAngkatan/$1');
-    $routes->get('prestasi', 'Sekolah\Dashboard::mPrestasi');
+    $routes->group('siswa', function ($routes) {
+        $routes->get('', 'Sekolah\Dashboard::mSiswa');
+        $routes->get('angkatan/(:num)', 'Sekolah\Dashboard::mSiswaByAngkatan/$1');
+    });
+    $routes->group('prestasi', function ($routes) {
+        $routes->get('', 'Sekolah\Dashboard::mPrestasi');
+    });
     $routes->group('akademis', function ($routes) {
         $routes->get('', 'Sekolah\Dashboard::mAkademis');
         $routes->get('angkatan/(:num)', 'Sekolah\Dashboard::mAkademisAngkatan/$1');

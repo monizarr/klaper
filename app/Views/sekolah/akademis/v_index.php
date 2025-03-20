@@ -73,7 +73,7 @@
                     <div class="card-body row">
                         <?php foreach ($angkatan as $a) : ?>
                             <div class="col-4 btn-group mb-3">
-                                <a href="<?= site_url('/sekolah/akademis/angkatan/' . $a['masuk']) ?>" class="btn btn-primary py-5 fs-3"><?= $a['masuk'] ?></a>
+                                <a href="<?= site_url('/sekolah/akademis/angkatan/' . $a['ta']) ?>" class="btn btn-primary py-5 fs-3"><?= $a['ta'] ?></a>
                             </div>
                         <?php endforeach ?>
                     </div>
@@ -87,32 +87,16 @@
                         <div style="flex: 1;">
                             <h3 class="card-title">Data Siswa Keseluruhan</h3>
                         </div>
-                        <div style="float: right;">
-                            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdown-angkatan" data-selected="" data-bs-toggle="dropdown" aria-expanded="false">
-                                Angkatan
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="dropdown-angkatan">
-                                <?php foreach ($angkatan as $a) : ?>
-                                    <li><a class="dropdown-item" href="#"><?= $a['masuk'] ?></a></li>
-                                <?php endforeach; ?>
-                            </ul>
-                        </div>
                     </div>
                     <div class="card-body">
-
                         <table id="userTable" class="display">
                             <thead>
                                 <tr>
+                                    <th>Kelas</th>
                                     <th>NIS</th>
                                     <th>Nama</th>
-                                    <th>Jenis Kelamin</th>
-                                    <th>Orang Tua</th>
-                                    <th>Masuk</th>
-                                    <th>Keluar</th>
-                                    <th>File</th>
-                                    <th>Created At</th>
-                                    <th>Updated At</th>
-                                    <th>Action</th>
+                                    <th>TA</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -605,51 +589,26 @@
             "processing": true,
             "serverSide": true,
             "ajax": {
-                "url": "<?= site_url('/sekolah/get-siswa') ?>",
+                "url": "<?= site_url('/kelas/get-kelas-ajax') ?>",
                 "type": "GET",
                 "data": function(d) {
                     d.angkatan = $('#dropdown-angkatan').attr('data-selected'); // Tambahkan parameter angkatan
                 }
             },
             "columns": [{
+                    "data": "kelas"
+                },
+                {
                     "data": "nis"
                 },
                 {
                     "data": "nama"
                 },
                 {
-                    "data": "jk"
+                    "data": "ta"
                 },
                 {
-                    "data": "orang_tua"
-                },
-                {
-                    "data": "masuk"
-                },
-                {
-                    "data": "keluar"
-                },
-                {
-                    "data": "bukti",
-                    "render": function(data) {
-                        if (data == null) {
-                            return "<div style='text-align:center;'>-</div>";
-                        }
-                        return `<a href="<?= base_url('uploads/file') ?>/${data}" target="_blank">
-                    <div style="text-align:center;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
-                    </div>
-                </a>`;
-                    }
-                },
-                {
-                    "data": "created_at"
-                },
-                {
-                    "data": "updated_at"
-                },
-                {
-                    "data": "id",
+                    "data": "siswa_id",
                     "render": function(data, type, row) {
                         return `
                     <a href="#" class="btn btn-sm btn-primary" 

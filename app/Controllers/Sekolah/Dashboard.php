@@ -6,6 +6,7 @@ use App\Controllers\BaseController;
 use App\Models\Siswa as ModelSiswa;
 use App\Models\Kelas as ModelKelas;
 use App\Models\Sekolah as ModelSekolah;
+use App\Models\Angkatan as ModelAngkatan;
 use CodeIgniter\HTTP\ResponseInterface;
 
 class Dashboard extends BaseController
@@ -16,10 +17,6 @@ class Dashboard extends BaseController
 
     public function index()
     {
-        if (session()->get('user') == null) {
-            return redirect()->to('/sekolah/login');
-        }
-
         $data = [
             'title' => 'Dashboard',
             'content' => 'sekolah/v_index',
@@ -32,23 +29,20 @@ class Dashboard extends BaseController
     public function mSiswa()
     {
 
-        if (session()->get('user') == null) {
-            return redirect()->to('/sekolah/login');
-        }
-
         $mSiswa = new ModelSiswa();
         $mKelas = new ModelKelas();
+        $mAngkatan = new ModelAngkatan();
 
         $user  = session()->get('user');
         $kelas = $mKelas->where('id_sekolah', $user['sekolah']['id'])->findAll();
         $siswa = $mSiswa->where('id_sekolah', $user['sekolah']['id'])->findAll();
-        $tahun = $mSiswa->select('masuk')->where('id_sekolah', $user['sekolah']['id'])->distinct()->findAll();
+        $tahun = $mAngkatan->where('id_sekolah', $user['sekolah']['id'])->distinct()->orderBy('angkatan', 'DESC')->findAll();
 
         helper(['form']);
 
         $data = [
             'title' => 'Manajemen Siswa',
-            'content' => 'sekolah/v_msiswa',
+            'content' => 'sekolah/siswa/v_index',
             'apath' => 'mSiswa',
             'siswa' => $siswa,
             'user' => $user,
@@ -61,23 +55,21 @@ class Dashboard extends BaseController
     public function mSiswaByAngkatan($angkatan)
     {
         $mSiswa = new ModelSiswa();
-        $mKelas = new ModelKelas();
+        $mAngkatan = new ModelAngkatan();
 
         $user  = session()->get('user');
-        $kelas = $mKelas->where('id_sekolah', $user['sekolah']['id'])->findAll();
+        $ta = $mAngkatan->findAll();
         $siswa = $mSiswa->where('id_sekolah', $user['sekolah']['id'])->where('masuk', $angkatan)->findAll();
-        $tahun = $mSiswa->select('masuk')->where('id_sekolah', $user['sekolah']['id'])->distinct()->findAll();
 
         helper(['form']);
 
         $data = [
             'title' => 'Manajemen Siswa',
-            'content' => 'sekolah/v_msiswa',
+            'content' => 'sekolah/siswa/v_angkatan',
             'apath' => 'mSiswa',
             'siswa' => $siswa,
             'user' => $user,
-            'kelas' => $kelas,
-            'angkatan' => $tahun
+            'ta' => $ta
         ];
 
         return view('layouts/v_wrapper', $data);
@@ -85,17 +77,13 @@ class Dashboard extends BaseController
 
     public function mAkademis()
     {
-        if (session()->get('user') == null) {
-            return redirect()->to('/sekolah/login');
-        }
-
         $mSiswa = new ModelSiswa();
         $mKelas = new ModelKelas();
 
         $user  = session()->get('user');
         $kelas = $mKelas->where('id_sekolah', $user['sekolah']['id'])->findAll();
         $siswa = $mSiswa->where('id_sekolah', $user['sekolah']['id'])->findAll();
-        $tahun = $mSiswa->select('masuk')->where('id_sekolah', $user['sekolah']['id'])->distinct()->orderBY('masuk', 'DESC')->findAll();
+        $tahun = $mKelas->select('ta')->where('id_sekolah', $user['sekolah']['id'])->distinct()->orderBY('ta', 'DESC')->findAll();
 
         helper(['form']);
 
@@ -113,10 +101,6 @@ class Dashboard extends BaseController
 
     public function mAkademisAngkatan($angkatan)
     {
-        if (session()->get('user') == null) {
-            return redirect()->to('/sekolah/login');
-        }
-
         $mSiswa = new ModelSiswa();
         $mKelas = new ModelKelas();
 
@@ -141,10 +125,6 @@ class Dashboard extends BaseController
 
     public function mPrestasi()
     {
-
-        if (session()->get('user') == null) {
-            return redirect()->to('/sekolah/login');
-        }
 
         $mSiswa = new ModelSiswa();
         $mKelas = new ModelKelas();
@@ -185,7 +165,9 @@ class Dashboard extends BaseController
 
         // Query builder
         $builder = $model->builder();
-        $builder->where('id_sekolah', session()->get('user')['sekolah']['id']);
+        $builder->select('siswa.*, angkatan.angkatan AS masuk');
+        $builder->join('angkatan', 'angkatan.id = siswa.masuk');
+        $builder->where('siswa.id_sekolah', session()->get('user')['sekolah']['id']);
 
         // Filter berdasarkan angkatan jika ada
         if (!empty($angkatan)) {
@@ -233,7 +215,9 @@ class Dashboard extends BaseController
 
         // Query builder
         $builder = $model->builder();
-        $builder->where('id_sekolah', session()->get('user')['sekolah']['id']);
+        $builder->select('siswa.*, angkatan.angkatan AS masuk');
+        $builder->join('angkatan', 'angkatan.id = siswa.masuk');
+        $builder->where('siswa.id_sekolah', session()->get('user')['sekolah']['id']);
         $builder->where('masuk', $angkatan);
 
         // Filter pencarian jika ada
@@ -407,10 +391,6 @@ class Dashboard extends BaseController
 
     public function profil()
     {
-        if (session()->get('user') == null) {
-            return redirect()->to('/sekolah/login');
-        }
-
         $sekolah = new ModelSekolah();
         $data = [
             'title' => 'Profil Sekolah',

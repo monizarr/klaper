@@ -8,7 +8,7 @@
                     <?= $user["sekolah"]["nama"] ?>
                 </div>
                 <h2 class="page-title">
-                    Manajemen Siswa
+                    <?= $title ?>
                 </h2>
             </div>
             <!-- Page title actions -->
@@ -42,9 +42,8 @@
         <!-- Flash message -->
         <?php if (session()->getFlashdata('success')) : ?>
             <div class="alert alert-success alert-dismissible" role="alert">
-                <div class="d-flex">
+                <div class="d-flex gap-2">
                     <div>
-                        <!-- Download SVG icon from http://tabler-icons.io/i/check -->
                         <svg xmlns="http://www.w3.org/2000/svg" class="icon alert-icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                             <path d="M5 12l5 5l10 -10"></path>
@@ -58,12 +57,13 @@
             </div>
         <?php elseif (session()->getFlashdata('error')) : ?>
             <div class="alert alert-danger alert-dismissible" role="alert">
-                <div class="d-flex">
+                <div class="d-flex gap-2">
                     <div>
-                        <!-- Download SVG icon from http://tabler-icons.io/i/check -->
-                        <svg xmlns="http://www.w3.org/2000/svg" class="icon alert-icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                            <path d="M5 12l5 5l10 -10"></path>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-alert-square-rounded">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path d="M12 3c7.2 0 9 1.8 9 9s-1.8 9 -9 9s-9 -1.8 -9 -9s1.8 -9 9 -9z" />
+                            <path d="M12 8v4" />
+                            <path d="M12 16h.01" />
                         </svg>
                     </div>
                     <div>
@@ -80,17 +80,6 @@
                         <div style="flex: 1;">
                             <h3 class="card-title">Data Siswa</h3>
                         </div>
-                        <div style="float: right;">
-                            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdown-angkatan" data-selected="" data-bs-toggle="dropdown" aria-expanded="false">
-                                Angkatan
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="dropdown-angkatan">
-                                <?php foreach ($angkatan as $a) : ?>
-                                    <li><a class="dropdown-item" href="#"><?= $a['masuk'] ?></a></li>
-                                <?php endforeach; ?>
-                            </ul>
-                        </div>
-
                     </div>
                     <div class="card-body">
 
@@ -173,9 +162,14 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-lg-12">
-                        <div class="mb-3">
+                        <?php
+                        $url = $_SERVER['REQUEST_URI'];
+                        $parts = explode('/', $url);
+                        $lastPart = end($parts);
+                        ?>
+                        <div class="mb-3" hidden>
                             <label class="form-label">Tahun Masuk</label>
-                            <input type="number" min="1900" max="2099" step="1" value="<?php echo date('Y'); ?>" name="masuk" class="form-control" required>
+                            <input type="hidden" value="<?= $lastPart ?>" name="masuk">
                         </div>
                         <div class="mb-3" id="surat_pindah" style="display: none;">
                             <label class="form-label w-100">Surat Pindah</label>
@@ -201,6 +195,7 @@
     </div>
 </div>
 
+<!-- Modal Edit -->
 <?php foreach ($siswa as $s) : ?>
     <div class="modal fade" id="modal-edit-<?= $s['id'] ?>" tabindex="-1" aria-labelledby="modal-edit-label-<?= $s['id'] ?>" aria-hidden="true">
         <div class="modal-dialog modal-lg">
@@ -255,7 +250,12 @@
                                 <div class="col-lg-6">
                                     <div class="mb-3">
                                         <label class="form-label">Tahun Masuk</label>
-                                        <input type="number" step="1" name="masuk" class="form-control" value="<?= $s['masuk'] ?>">
+                                        <!-- select option for $ta -->
+                                        <select class="form-select" name="masuk">
+                                            <?php foreach ($ta as $i) : ?>
+                                                <option value="<?= $i['id'] ?>" <?= $s['masuk'] == $i['id'] ? 'selected' : '' ?>><?= $i['angkatan'] ?></option>
+                                            <?php endforeach; ?>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
@@ -265,7 +265,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <?php if ($s['status_keluar'] != null) : ?>
+                            <?php if ($s['keluar'] != null) : ?>
                                 <div class="col-lg-12">
                                     <div class="mb-3">
                                         <label class="form-label"> Status Keluar</label>
@@ -365,6 +365,130 @@
         modal.addEventListener('show.bs.modal', function(event) {
             const siswaId = this.id.split('-')[2]; // Ambil ID siswa dari ID modal (e.g., 'modal-edit-2')
             console.log("Siswa ID : ", siswaId);
+            fetch(`http://localhost:8080/siswa/get-kelas-siswa/${siswaId}`)
+                .then(response => response.json())
+                .then(result => {
+                    const data = result.data;
+                    const targetDiv = document.querySelector(`#tabs-profile-${siswaId}`);
+
+                    console.log(data);
+
+                    const kelasPlus = parseInt(data[data.length - 1]['kelas']) + 1;
+                    const kelasTerakhir = parseInt(data[data.length - 1]['kelas']);
+
+                    const isLulus = data[data.length - 1]['bukti'] != null && data[data.length - 1]['status_keluar'] == 'lulus';
+                    const isPindah = data[data.length - 1]['bukti'] != null && data[data.length - 1]['status_keluar'] == 'pindah';
+                    const isDo = data[data.length - 1]['bukti'] != null && data[data.length - 1]['status_keluar'] == 'do';
+
+                    if (Array.isArray(data) && data.length > 0) {
+                        targetDiv.innerHTML = `
+                        <div class="mt-4 row">
+                            <form method="post" class="col-md-6" action="<?= site_url('/kelas/add') ?>" >
+                                <input type="text" hidden class="form-control" name="id_siswa" required value="${siswaId}" placeholder="Tahun Ajaran">
+                                <input type="text" hidden class="form-control" name="id_sekolah" required value="<?= $user['sekolah']['id'] ?>" placeholder="Tahun Ajaran">
+                                <div class="row" hidden>
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Kelas</label>
+                                            <input type="text" class="form-control" name="kelas" required placeholder="Kelas" value="${kelasPlus}">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Tahun Ajaran</label>
+                                            <input type="text" class="form-control" name="ta" required placeholder="Tahun Ajaran" value="<?= date('Y') ?>">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="mb-3">
+                                        <button type="submit" class="btn btn-primary w-full" ${isLulus || isPindah ||isDo ? 'disabled' : ''}>
+                                        <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-arrow-badge-up"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M17 11v6l-5 -4l-5 4v-6l5 -4z" /></svg>
+                                        Naik Kelas
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                            
+                            <form method="post" class="col-md-6 mb-2" action="<?= site_url('/kelas/add') ?>" >
+                                <input type="text" hidden class="form-control" name="id_siswa" required value="${siswaId}" placeholder="Tahun Ajaran">
+                                <input type="text" hidden class="form-control" name="id_sekolah" required value="<?= $user['sekolah']['id'] ?>" placeholder="Tahun Ajaran">
+                                <div class="row" hidden>
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Kelas</label>
+                                            <input type="text" class="form-control" name="kelas" required placeholder="Kelas" value="${kelasTerakhir}">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Tahun Ajaran</label>
+                                            <input type="text" class="form-control" name="ta" required placeholder="Tahun Ajaran" value="<?= date('Y') ?>">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="mb-3">
+                                        <button type="submit" class="btn btn-primary w-full" ${isLulus || isPindah ||isDo ? 'disabled' : ''} >
+                                        <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-arrow-badge-down"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M17 13v-6l-5 4l-5 -4v6l5 4z" /></svg>
+                                        Tinggal Kelas
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <hr />
+                            <h4>Riwayat Kelas</h4>
+                            <table class="table table-bordered table-striped mt-2" id="table-riwayat-${siswaId}">
+                                <thead>
+                                    <tr>
+                                        <th>Kelas</th>
+                                        <th>Tahun Ajaran</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${data.map((item, index) => `
+                                    <tr>
+                                        <td>
+                                            <input type="text" class="form-control" name="kelas-${item.id}" id="kelas-${item.id}" value="${item.kelas}" placeholder="Kelas">
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" name="ta-${item.id}" id="ta-${item.id}" value="${item.ta}" placeholder="Tahun Ajaran">
+                                        </td>
+                                        <td>
+                                            <button 
+                                                class="btn btn-primary" 
+                                                onclick="updateRow(${item.id})">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon m-0 icon-tabler icons-tabler-outline icon-tabler-edit">
+                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                    <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
+                                                    <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" />
+                                                    <path d="M16 5l3 3" />
+                                                </svg>
+                                            </button>
+                                            <button 
+                                                class="btn btn-neutral" 
+                                                onclick="deleteRow(${item.id})">
+                                                <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon m-0 icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+                                                </svg>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                        `;
+                    } else {
+                        targetDiv.innerHTML = '<p class="mt-4">Data tidak ditemukan.</p>';
+                    }
+
+                })
+                .catch(error => {
+                    const targetDiv = document.querySelector(`#tabs-profile-${siswaId}`);
+                    targetDiv.innerHTML = `<p>Terjadi kesalahan: ${error.message}</p>`;
+                });
         });
     });
 
@@ -477,11 +601,14 @@
     });
 
     $(document).ready(function() {
+        let path = window.location.pathname.split('/');
+        let angkatan = path[path.length - 1];
+
         let table = $('#userTable').DataTable({
             "processing": true,
             "serverSide": true,
             "ajax": {
-                "url": "<?= site_url('/sekolah/get-siswa') ?>",
+                "url": "<?= site_url('/sekolah/akademis/get-akademis-angkatan/') ?>" + angkatan,
                 "type": "GET",
                 "data": function(d) {
                     d.angkatan = $('#dropdown-angkatan').attr('data-selected'); // Tambahkan parameter angkatan
