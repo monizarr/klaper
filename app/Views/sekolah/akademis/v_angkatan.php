@@ -163,7 +163,9 @@
                         ?>
                         <div class="mb-3">
                             <label class="form-label">Tahun Masuk</label>
-                            <input type="number" min="1900" max="2099" step="1" value="<?= $lastPart ?>" name="masuk" class="form-control" required>
+                            <input type="number" value="<?= $lastPart ?>" name="masuk" class="form-control" required>
+                            <!-- dropdown -->
+
                         </div>
                         <div class="mb-3" id="surat_pindah" style="display: none;">
                             <label class="form-label w-100">Surat Pindah</label>

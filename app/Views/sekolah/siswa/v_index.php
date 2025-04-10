@@ -242,7 +242,6 @@
                                             <?php else : ?>
                                                 <img src="<?= base_url(UPLOAD_PATH . '/' . $s['bukti_masuk']) ?>" class="img-fluid" alt="bukti" />
                                             <?php endif; ?>
-
                                         </div>
                                     </div>
                                 </div>

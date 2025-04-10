@@ -3,12 +3,12 @@
 namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
+use App\Database\Seeds\Prestasi as PrestasiSeeder;
 
 class Prestasi extends Migration
 {
     public function up()
     {
-        // id, prestasi, deskripsi_prestasi, tanggal_prestasi, sertifikat
         $this->forge->addField([
             'id' => [
                 'type' => 'INT',
@@ -33,10 +33,23 @@ class Prestasi extends Migration
                 'type' => 'VARCHAR',
                 'constraint' => 255,
             ],
+            'id_siswa' => [
+                'type' => 'INT',
+                'constraint' => 11,
+            ],
+            'id_sekolah' => [
+                'type' => 'INT',
+                'constraint' => 11,
+            ],
         ]);
 
         $this->forge->addKey('id', true);
         $this->forge->createTable('prestasi');
+        $this->forge->addForeignKey('id_siswa', 'siswa', 'id', 'CASCADE', 'CASCADE');
+        $this->forge->addForeignKey('id_sekolah', 'sekolah', 'id', 'CASCADE', 'CASCADE');
+
+        $seeder = \Config\Database::seeder();
+        $seeder->call(PrestasiSeeder::class);
     }
 
     public function down()

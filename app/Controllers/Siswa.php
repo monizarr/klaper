@@ -40,9 +40,12 @@ class Siswa extends BaseController
     public function getKelasSiswa($id_siswa)
     {
         $mKelas = new ModelKelas();
-        $kelas = $mKelas->select('kelas.*, siswa.nama as nama_siswa');
-        $kelas = $mKelas->join('siswa', 'siswa.id = kelas.id_siswa')->where('id_siswa', $id_siswa)->findAll();
-
+        $kelas = $mKelas->select('kelas.kelas, siswa.nama as nama_siswa, angkatan.angkatan as ta');
+        $kelas = $mKelas->join('siswa', 'siswa.id = kelas.id_siswa')
+            ->join('angkatan', 'angkatan.id = kelas.ta')
+            ->where('kelas.id_siswa', $id_siswa)
+            ->orderBy('kelas.kelas', 'ASC')
+            ->findAll();
         $response = [
             'data' => $kelas
         ];

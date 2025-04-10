@@ -73,7 +73,7 @@
                     <div class="card-body row">
                         <?php foreach ($angkatan as $a) : ?>
                             <div class="col-4 btn-group mb-3">
-                                <a href="<?= site_url('/sekolah/akademis/angkatan/' . $a['ta']) ?>" class="btn btn-primary py-5 fs-3"><?= $a['ta'] ?></a>
+                                <a href="<?= site_url('/sekolah/akademis/angkatan/' . $a['id']) ?>" class="btn btn-primary py-5 fs-3"><?= $a['angkatan'] ?></a>
                             </div>
                         <?php endforeach ?>
                     </div>
@@ -562,9 +562,6 @@
         $(`#modal-edit-${id} #editOrtu`).val(ortu);
         $(`#modal-edit-${id} #editForm`).attr('action', `<?= site_url('/siswa/edit-siswa/') ?>${id}`);
     });
-
-
-
 
     // ajax for modal riwayat akademis
     $(document).ready(function() {

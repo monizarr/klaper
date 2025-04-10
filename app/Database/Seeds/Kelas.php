@@ -29,7 +29,7 @@ class Kelas extends Seeder
                 'id_siswa' => 3,
                 'id_sekolah' => 2,
                 'kelas' => '1',
-                'ta' => '1',
+                'ta' => '2',
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s')
             ],

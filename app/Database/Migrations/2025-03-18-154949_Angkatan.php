@@ -20,6 +20,10 @@ class Angkatan extends Migration
                 'type' => 'INT',
                 'constraint' => 4,
             ],
+            'status' => [
+                'type' => 'BOOLEAN',
+                'default' => 0,
+            ],
             'deskripsi' => [
                 'type' => 'TEXT',
                 'null' => true,

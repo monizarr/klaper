@@ -79,11 +79,12 @@ class Dashboard extends BaseController
     {
         $mSiswa = new ModelSiswa();
         $mKelas = new ModelKelas();
+        $mAngkatan = new ModelAngkatan();
 
         $user  = session()->get('user');
         $kelas = $mKelas->where('id_sekolah', $user['sekolah']['id'])->findAll();
         $siswa = $mSiswa->where('id_sekolah', $user['sekolah']['id'])->findAll();
-        $tahun = $mKelas->select('ta')->where('id_sekolah', $user['sekolah']['id'])->distinct()->orderBY('ta', 'DESC')->findAll();
+        $tahun = $mAngkatan->where('id_sekolah', $user['sekolah']['id'])->distinct()->orderBy('angkatan', 'DESC')->findAll();
 
         helper(['form']);
 
@@ -103,16 +104,21 @@ class Dashboard extends BaseController
     {
         $mSiswa = new ModelSiswa();
         $mKelas = new ModelKelas();
+        $mAngkatan = new ModelAngkatan();
 
         $user  = session()->get('user');
         $kelas = $mKelas->where('id_sekolah', $user['sekolah']['id'])->findAll();
         $siswa = $mSiswa->where('id_sekolah', $user['sekolah']['id'])->where('masuk', $angkatan)->findAll();
-        $tahun = $mSiswa->select('masuk')->where('id_sekolah', $user['sekolah']['id'])->distinct()->findAll();
+
+        $tahun = $mAngkatan->where('id', $angkatan)->first();
+        if ($tahun) {
+            $ta = $tahun['angkatan'];
+        }
 
         helper(['form']);
 
         $data = [
-            'title' => 'Data Akademis Angkatan ' . $angkatan,
+            'title' => 'Data Akademis Angkatan ' . $ta,
             'content' => 'sekolah/akademis/v_angkatan',
             'apath' => 'mSiswa',
             'user' => $user,
@@ -147,8 +153,6 @@ class Dashboard extends BaseController
 
         return view('layouts/v_wrapper', $data);
     }
-
-
 
 
     public function getSiswa()
