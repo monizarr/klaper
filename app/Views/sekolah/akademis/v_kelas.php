@@ -73,26 +73,6 @@
                 <a class="btn-close" data-bs-dismiss="alert" aria-label="close"></a>
             </div>
         <?php endif; ?>
-        <div class="row row-deck row-cards mb-4">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header ">
-                        <h3 class="card-title">Pilih Kelas</h3>
-                    </div>
-                    <div class="card-body row">
-                        <?php for ($i = 1; $i <= 6; $i++) : ?>
-                            <div class="col-4 btn-group mb-3 bg-light" style="background-color: #fff;">
-                                <a href="<?= site_url('/sekolah/akademis/angkatan/kelas/' . $i) ?>" class="btn btn-primary bg-light text-primary py-5 fs-3" style="border: 1px solid #066fd1; border-radius: 4px; box-sizing: border-box;">
-                                    <span class="fs-3">
-                                        Kelas <?= $i ?>
-                                    </span>
-                                </a>
-                            </div>
-                        <?php endfor ?>
-                    </div>
-                </div>
-            </div>
-        </div>
         <div class="row row-deck row-cards">
             <div class="col-12">
                 <div class="card">
@@ -124,7 +104,7 @@
 </div>
 
 <!-- Modal tambah siswa -->
-<div class="modal modal-blur fade" id="modal-siswa" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal modal-blur fade" id="modal-siswa" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-lg" role="document">
         <form action="<?= site_url('/sekolah/add-siswa') ?>" method="post" class="modal-content" enctype="multipart/form-data">
             <div class="modal-header">
@@ -212,7 +192,7 @@
 </div>
 
 <?php foreach ($siswa as $s) : ?>
-    <div class="modal fade" id="modal-edit-<?= $s['id'] ?>" tabindex="-1" aria-labelledby="modal-edit-label-<?= $s['id'] ?>" aria-hidden="true">
+    <div class="modal fade" id="modal-edit-<?= $s['id'] ?>" tabindex="-1" aria-labelledby="modal-edit-label-<?= $s['id'] ?>">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -342,7 +322,7 @@
 <?php endforeach; ?>
 
 <!-- Modal Confirm Delete -->
-<div class="modal fade" id="modal-confirm-delete" tabindex="-1" aria-labelledby="modal-confirm-delete-label" aria-hidden="true">
+<div class="modal fade" id="modal-confirm-delete" tabindex="-1" aria-labelledby="modal-confirm-delete-label">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <form id="deleteForm" method="post">
@@ -612,7 +592,7 @@
             "processing": true,
             "serverSide": true,
             "ajax": {
-                "url": "<?= site_url('/kelas/get-kelas-ajax/') ?>" + angkatan,
+                "url": "<?= site_url('/kelas/get-perkelas-ajax/') ?>" + angkatan,
                 "type": "GET",
                 "data": function(d) {
                     d.angkatan = $('#dropdown-angkatan').attr('data-selected'); // Tambahkan parameter angkatan

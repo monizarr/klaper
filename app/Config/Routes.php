@@ -40,6 +40,7 @@ $routes->group('kelas', function ($routes) {
     $routes->post('delete/(:num)', 'Kelas::delete/$1');
     $routes->get('get-kelas-ajax', 'Kelas::getKelasSiswa');
     $routes->get('get-kelas-ajax/(:num)', 'Kelas::getKelasSiswaByTa/$1');
+    $routes->get('get-perkelas-ajax/(:num)', 'Kelas::getKelasSiswaByKelas/$1');
 });
 
 $routes->group('sekolah', ['filter' => 'authsekolah'], function ($routes) {
@@ -62,6 +63,7 @@ $routes->group('sekolah', ['filter' => 'authsekolah'], function ($routes) {
         $routes->get('', 'Sekolah\Dashboard::mAkademis');
         $routes->get('angkatan/(:num)', 'Sekolah\Dashboard::mAkademisAngkatan/$1');
         $routes->get('get-akademis-angkatan/(:num)', 'Sekolah\Dashboard::getSiswaByAngkatan/$1');
+        $routes->get('angkatan/kelas/(:num)', 'Sekolah\Dashboard::mAkademisKelas/$1');
     });
     $routes->post('upload-ijazah', 'Siswa::uploadIjazah');
     $routes->post('upload-spindah', 'Siswa::uploadSrtPindah');

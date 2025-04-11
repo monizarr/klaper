@@ -123,7 +123,36 @@ class Dashboard extends BaseController
             'apath' => 'mSiswa',
             'user' => $user,
             'siswa' => $siswa,
-            'angkatan' => $tahun
+            'angkatan' => $tahun,
+        ];
+
+        return view('layouts/v_wrapper', $data);
+    }
+
+    public function mAkademisKelas($angkatan)
+    {
+        $mSiswa = new ModelSiswa();
+        $mKelas = new ModelKelas();
+        $mAngkatan = new ModelAngkatan();
+
+        $user  = session()->get('user');
+        $kelas = $mKelas->where('id_sekolah', $user['sekolah']['id'])->findAll();
+        $siswa = $mSiswa->where('id_sekolah', $user['sekolah']['id'])->where('masuk', $angkatan)->findAll();
+
+        $tahun = $mAngkatan->where('id', $angkatan)->first();
+        if ($tahun) {
+            $ta = $tahun['angkatan'];
+        }
+
+        helper(['form']);
+
+        $data = [
+            'title' => 'Data Akademis Angkatan ' . $ta,
+            'content' => 'sekolah/akademis/v_kelas',
+            'apath' => 'mSiswa',
+            'user' => $user,
+            'siswa' => $siswa,
+            'angkatan' => $tahun,
         ];
 
         return view('layouts/v_wrapper', $data);
