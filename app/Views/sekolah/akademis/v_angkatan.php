@@ -82,7 +82,7 @@
                     <div class="card-body row">
                         <?php for ($i = 1; $i <= 6; $i++) : ?>
                             <div class="col-4 btn-group mb-3 bg-light" style="background-color: #fff;">
-                                <a href="<?= site_url('/sekolah/akademis/angkatan/kelas/' . $i) ?>" class="btn btn-primary bg-light text-primary py-5 fs-3" style="border: 1px solid #066fd1; border-radius: 4px; box-sizing: border-box;">
+                                <a href="<?= site_url('/sekolah/akademis/angkatan/' . $angkatan . '/kelas/' . $i) ?>" class="btn btn-primary bg-light text-primary py-5 fs-3" style="border: 1px solid #066fd1; border-radius: 4px; box-sizing: border-box;">
                                     <span class="fs-3">
                                         Kelas <?= $i ?>
                                     </span>
@@ -109,6 +109,7 @@
                                     <th>NIS</th>
                                     <th>Nama</th>
                                     <th>TA</th>
+                                    <th>Tahun masuk</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -212,7 +213,7 @@
 </div>
 
 <?php foreach ($siswa as $s) : ?>
-    <div class="modal fade" id="modal-edit-<?= $s['id'] ?>" tabindex="-1" aria-labelledby="modal-edit-label-<?= $s['id'] ?>" aria-hidden="true">
+    <div class="modal fade" id="modal-edit-<?= $s['id'] ?>" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -342,7 +343,7 @@
 <?php endforeach; ?>
 
 <!-- Modal Confirm Delete -->
-<div class="modal fade" id="modal-confirm-delete" tabindex="-1" aria-labelledby="modal-confirm-delete-label" aria-hidden="true">
+<div class="modal fade" id="modal-confirm-delete" tabindex="-1" aria-labelledby="modal-confirm-delete-label">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <form id="deleteForm" method="post">
@@ -367,6 +368,8 @@
 <script>
     document.querySelectorAll('.modal').forEach(modal => {
         modal.addEventListener('show.bs.modal', function(event) {
+            console.log("Testtt");
+            const modal = event.target;
             const siswaId = this.id.split('-')[2]; // Ambil ID siswa dari ID modal (e.g., 'modal-edit-2')
             console.log("Siswa ID : ", siswaId);
             fetch(`http://localhost:8080/siswa/get-kelas-siswa/${siswaId}`)
@@ -629,6 +632,9 @@
                 },
                 {
                     "data": "ta"
+                },
+                {
+                    "data": "tahun_masuk",
                 },
                 {
                     "data": "siswa_id",

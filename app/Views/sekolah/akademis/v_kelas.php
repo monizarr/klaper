@@ -586,13 +586,14 @@
 
     $(document).ready(function() {
         let path = window.location.pathname.split('/');
-        let angkatan = path[path.length - 1];
+        let angkatan = path[path.length - 3];
+        let kelas = path[path.length - 1];
 
         let table = $('#userTable').DataTable({
             "processing": true,
             "serverSide": true,
             "ajax": {
-                "url": "<?= site_url('/kelas/get-perkelas-ajax/') ?>" + angkatan,
+                "url": "<?= site_url('/kelas/get-perkelas-ajax/') ?>" + angkatan + "/" + kelas,
                 "type": "GET",
                 "data": function(d) {
                     d.angkatan = $('#dropdown-angkatan').attr('data-selected'); // Tambahkan parameter angkatan

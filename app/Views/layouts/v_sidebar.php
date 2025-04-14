@@ -332,7 +332,7 @@
                                 </svg>
                             </span>
                             <span class="nav-link-title">
-                                Tambah Angkatan
+                                Kelola Angkatan
                             </span>
                         </a>
                     </li>

@@ -324,7 +324,7 @@
                     console.log(data);
 
                     const kelasPlus = parseInt(data[data.length - 1]['kelas']) + 1;
-                    const kelasTerakhir = parseInt(data[data.length - 1]['kelas']);
+                    const kelasTerakhir = parseInt(data[data.length - 1]['kelas']) + 1;
 
                     const isLulus = data[data.length - 1]['bukti'] != null && data[data.length - 1]['status_keluar'] == 'lulus';
                     const isPindah = data[data.length - 1]['bukti'] != null && data[data.length - 1]['status_keluar'] == 'pindah';
@@ -359,7 +359,6 @@
                                     </div>
                                 </div>
                             </form>
-                            
                             <form method="post" class="col-md-6 mb-2" action="<?= site_url('/kelas/add') ?>" >
                                 <input type="text" hidden class="form-control" name="id_siswa" required value="${siswaId}" placeholder="Tahun Ajaran">
                                 <input type="text" hidden class="form-control" name="id_sekolah" required value="<?= $user['sekolah']['id'] ?>" placeholder="Tahun Ajaran">
@@ -389,7 +388,7 @@
 
                             <hr />
                             <h4>Riwayat Kelas</h4>
-                            <table class="table table-bordered table-striped mt-2" id="table-riwayat-${siswaId}">
+                            <table class="table table-bordered table-striped mt-2">
                                 <thead>
                                     <tr>
                                         <th>Kelas</th>
@@ -513,22 +512,6 @@
         $('#nisText').text(nama);
         $('#deleteForm').attr('action', `<?= site_url('/siswa/del-siswa/') ?>${id}`);
     });
-
-    $(document).on('click', '[data-bs-target^="#modal-edit-"]', function() {
-        const id = $(this).data('id');
-        const nis = $(this).data('nis');
-        const nama = $(this).data('nama');
-        const jk = $(this).data('jk');
-        const ortu = $(this).data('ortu');
-
-        // Update modal fields with data
-        $(`#modal-edit-${id} #editNis`).val(nis);
-        $(`#modal-edit-${id} #editNama`).val(nama);
-        $(`#modal-edit-${id} #editJk`).val(jk);
-        $(`#modal-edit-${id} #editOrtu`).val(ortu);
-        $(`#modal-edit-${id} #editForm`).attr('action', `<?= site_url('/siswa/edit-siswa/') ?>${id}`);
-    });
-
 
 
 

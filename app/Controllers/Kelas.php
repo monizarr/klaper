@@ -144,6 +144,7 @@ class Kelas extends BaseController
     public function getKelasSiswaByTa($ta)
     {
         $mKelas = new ModelKelas();
+        $mAngkatan = new \App\Models\Angkatan();
 
         // Ambil parameter dari request DataTables
         $start = $this->request->getVar('start');
@@ -151,6 +152,8 @@ class Kelas extends BaseController
         $draw = $this->request->getVar('draw');
         $searchValue = $this->request->getVar('search')['value'] ?? '';
         $order = $this->request->getVar('order')[0];
+
+        $tahunMasuk = $mAngkatan->where('angkatan', $ta)->first()['id'];
 
         // Query builder
         $builder = $mKelas->builder();
@@ -162,14 +165,16 @@ class Kelas extends BaseController
             ->groupBy('id_siswa')
             ->getCompiledSelect();
 
+
         // Join dengan subquery untuk mendapatkan data kelas terbaru
-        $builder->select('kelas.id, kelas.kelas,  siswa.nama, siswa.nis, siswa.id as siswa_id, angkatan.angkatan as ta');
+        $builder->select('kelas.id, kelas.kelas,  siswa.nama, siswa.nis, siswa.id as siswa_id, angkatan.angkatan as ta, siswa.masuk as tahun_masuk');
         $builder->join('siswa', 'siswa.id = kelas.id_siswa');
         $builder->join("($subQuery) as latest_kelas", 'latest_kelas.id_siswa = kelas.id_siswa AND latest_kelas.max_kelas = kelas.kelas');
         $builder->join('angkatan', 'angkatan.id = kelas.ta');
 
         $builder->where('kelas.id_sekolah', session()->get('user')['sekolah']['id']);
-        $builder->where('kelas.ta', $ta);
+        $builder->where('angkatan.status', 1);
+        $builder->where('siswa.masuk', $tahunMasuk);
 
         if (!empty($searchValue)) {
             $builder->groupStart();
@@ -198,7 +203,7 @@ class Kelas extends BaseController
         return $this->response->setJSON($data);
     }
 
-    public function getKelasSiswaByKelas($kelas)
+    public function getKelasSiswaByKelas($angkatan, $kelas)
     {
         $mKelas = new ModelKelas();
 
@@ -208,6 +213,9 @@ class Kelas extends BaseController
         $draw = $this->request->getVar('draw');
         $searchValue = $this->request->getVar('search')['value'] ?? '';
         $order = $this->request->getVar('order')[0];
+
+        $mAngkatan = new \App\Models\Angkatan();
+        $tahunMasuk = $mAngkatan->where('angkatan', $angkatan)->first()['id'];
 
         // Query builder
         $builder = $mKelas->builder();
@@ -227,6 +235,8 @@ class Kelas extends BaseController
 
         $builder->where('kelas.id_sekolah', session()->get('user')['sekolah']['id']);
         $builder->where('kelas.kelas', $kelas);
+        // $builder->where('angkatan.status', 1);
+        $builder->where('siswa.masuk', $tahunMasuk);
 
         if (!empty($searchValue)) {
             $builder->groupStart();

@@ -25,7 +25,6 @@ class Dashboard extends BaseController
         return view('layouts/v_wrapper', $data);
     }
 
-
     public function mSiswa()
     {
 
@@ -106,24 +105,30 @@ class Dashboard extends BaseController
         $mKelas = new ModelKelas();
         $mAngkatan = new ModelAngkatan();
 
+        $angkatanMasuk = $mAngkatan->where('angkatan', $angkatan)->first();
+        if ($angkatanMasuk) {
+            $angkatanMasuk = $angkatanMasuk['id'];
+        } else {
+            $angkatanMasuk = null;
+        }
         $user  = session()->get('user');
         $kelas = $mKelas->where('id_sekolah', $user['sekolah']['id'])->findAll();
-        $siswa = $mSiswa->where('id_sekolah', $user['sekolah']['id'])->where('masuk', $angkatan)->findAll();
+        $siswa = $mSiswa->where('id_sekolah', $user['sekolah']['id'])->where('masuk', $angkatanMasuk)->findAll();
 
-        $tahun = $mAngkatan->where('id', $angkatan)->first();
-        if ($tahun) {
-            $ta = $tahun['angkatan'];
-        }
+        // $tahun = $mAngkatan->where('id', $angkatan)->first();
+        // if ($tahun) {
+        //     $ta = $tahun['angkatan'];
+        // }
 
         helper(['form']);
 
         $data = [
-            'title' => 'Data Akademis Angkatan ' . $ta,
+            'title' => 'Data Akademis Angkatan ' . $angkatan,
             'content' => 'sekolah/akademis/v_angkatan',
             'apath' => 'mSiswa',
             'user' => $user,
             'siswa' => $siswa,
-            'angkatan' => $tahun,
+            'angkatan' => $angkatan,
         ];
 
         return view('layouts/v_wrapper', $data);
@@ -135,24 +140,26 @@ class Dashboard extends BaseController
         $mKelas = new ModelKelas();
         $mAngkatan = new ModelAngkatan();
 
+        $angkatanMasuk = $mAngkatan->where('angkatan', $angkatan)->first();
+        if ($angkatanMasuk) {
+            $angkatan = $angkatanMasuk['id'];
+        } else {
+            $angkatan = null;
+        }
+
         $user  = session()->get('user');
         $kelas = $mKelas->where('id_sekolah', $user['sekolah']['id'])->findAll();
         $siswa = $mSiswa->where('id_sekolah', $user['sekolah']['id'])->where('masuk', $angkatan)->findAll();
 
-        $tahun = $mAngkatan->where('id', $angkatan)->first();
-        if ($tahun) {
-            $ta = $tahun['angkatan'];
-        }
-
         helper(['form']);
 
         $data = [
-            'title' => 'Data Akademis Angkatan ' . $ta,
+            'title' => 'Data Akademis Angkatan ' . $angkatan,
             'content' => 'sekolah/akademis/v_kelas',
             'apath' => 'mSiswa',
             'user' => $user,
             'siswa' => $siswa,
-            'angkatan' => $tahun,
+            'angkatan' => $angkatan,
         ];
 
         return view('layouts/v_wrapper', $data);

@@ -73,36 +73,9 @@
                     <div class="card-body row">
                         <?php foreach ($angkatan as $a) : ?>
                             <div class="col-4 btn-group mb-3">
-                                <a href="<?= site_url('/sekolah/akademis/angkatan/' . $a['id']) ?>" class="btn btn-primary py-5 fs-3"><?= $a['angkatan'] ?></a>
+                                <a href="<?= site_url('/sekolah/akademis/angkatan/' . $a['angkatan']) ?>" class="btn btn-primary py-5 fs-3"><?= $a['angkatan'] ?></a>
                             </div>
                         <?php endforeach ?>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row row-deck row-cards">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header d-flex">
-                        <div style="flex: 1;">
-                            <h3 class="card-title">Data Siswa Keseluruhan</h3>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <table id="userTable" class="display">
-                            <thead>
-                                <tr>
-                                    <th>Kelas</th>
-                                    <th>NIS</th>
-                                    <th>Nama</th>
-                                    <th>TA</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Data akan diisi oleh DataTables -->
-                            </tbody>
-                        </table>
                     </div>
                 </div>
             </div>
@@ -581,65 +554,65 @@
         });
     });
 
-    $(document).ready(function() {
-        let table = $('#userTable').DataTable({
-            "processing": true,
-            "serverSide": true,
-            "ajax": {
-                "url": "<?= site_url('/kelas/get-kelas-ajax') ?>",
-                "type": "GET",
-                "data": function(d) {
-                    d.angkatan = $('#dropdown-angkatan').attr('data-selected'); // Tambahkan parameter angkatan
-                }
-            },
-            "columns": [{
-                    "data": "kelas"
-                },
-                {
-                    "data": "nis"
-                },
-                {
-                    "data": "nama"
-                },
-                {
-                    "data": "ta"
-                },
-                {
-                    "data": "siswa_id",
-                    "render": function(data, type, row) {
-                        return `
-                    <a href="#" class="btn btn-sm btn-primary" 
-                        data-bs-toggle="modal" 
-                        data-bs-target="#modal-edit-${data}" 
-                        data-id="${data}" 
-                        data-nis="${row.nis}" 
-                        data-nama="${row.nama}" 
-                        data-jk="${row.jk}" 
-                        data-ortu="${row.orang_tua}">
-                        Edit
-                    </a>
-                    <a href="#" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#modal-confirm-delete" data-id="${data}" data-nis="${row.nis}" data-nama="${row.nama}">Delete</a>`;
-                    }
-                },
-            ],
-            "order": [
-                [0, 'asc']
-            ]
-        });
+    // $(document).ready(function() {
+    //     let table = $('#userTable').DataTable({
+    //         "processing": true,
+    //         "serverSide": true,
+    //         "ajax": {
+    //             "url": "<?= site_url('/kelas/get-kelas-ajax') ?>",
+    //             "type": "GET",
+    //             "data": function(d) {
+    //                 d.angkatan = $('#dropdown-angkatan').attr('data-selected'); // Tambahkan parameter angkatan
+    //             }
+    //         },
+    //         "columns": [{
+    //                 "data": "kelas"
+    //             },
+    //             {
+    //                 "data": "nis"
+    //             },
+    //             {
+    //                 "data": "nama"
+    //             },
+    //             {
+    //                 "data": "ta"
+    //             },
+    //             {
+    //                 "data": "siswa_id",
+    //                 "render": function(data, type, row) {
+    //                     return `
+    //                 <a href="#" class="btn btn-sm btn-primary" 
+    //                     data-bs-toggle="modal" 
+    //                     data-bs-target="#modal-edit-${data}" 
+    //                     data-id="${data}" 
+    //                     data-nis="${row.nis}" 
+    //                     data-nama="${row.nama}" 
+    //                     data-jk="${row.jk}" 
+    //                     data-ortu="${row.orang_tua}">
+    //                     Edit
+    //                 </a>
+    //                 <a href="#" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#modal-confirm-delete" data-id="${data}" data-nis="${row.nis}" data-nama="${row.nama}">Delete</a>`;
+    //                 }
+    //             },
+    //         ],
+    //         "order": [
+    //             [0, 'asc']
+    //         ]
+    //     });
 
-        // Event listener untuk dropdown
-        $('.dropdown-menu a').on('click', function(e) {
-            e.preventDefault();
+    //     // Event listener untuk dropdown
+    //     $('.dropdown-menu a').on('click', function(e) {
+    //         e.preventDefault();
 
-            // Dapatkan nilai angkatan dari item yang diklik
-            let selectedAngkatan = $(this).text();
+    //         // Dapatkan nilai angkatan dari item yang diklik
+    //         let selectedAngkatan = $(this).text();
 
-            // Tampilkan angkatan yang dipilih di tombol dropdown
-            $('#dropdown-angkatan').text(selectedAngkatan).attr('data-selected', selectedAngkatan);
+    //         // Tampilkan angkatan yang dipilih di tombol dropdown
+    //         $('#dropdown-angkatan').text(selectedAngkatan).attr('data-selected', selectedAngkatan);
 
-            // Reload data DataTable dengan parameter baru
-            table.ajax.reload();
-        });
+    //         // Reload data DataTable dengan parameter baru
+    //         table.ajax.reload();
+    //     });
 
-    });
+    // });
 </script>

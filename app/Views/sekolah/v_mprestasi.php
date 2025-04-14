@@ -699,9 +699,6 @@
         $(`#modal-edit-${id} #editForm`).attr('action', `<?= site_url('/siswa/edit-siswa/') ?>${id}`);
     });
 
-
-
-
     // ajax for modal riwayat akademis
     $(document).ready(function() {
         $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function(e) {
