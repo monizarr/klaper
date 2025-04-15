@@ -23,6 +23,7 @@ $routes->group('auth', function ($routes) {
 $routes->group('angkatan', function ($routes) {
     $routes->get('/', 'Angkatan::index');
     $routes->post('add', 'Angkatan::add');
+    $routes->post('update-ta-active', 'Angkatan::updateTaActive');
 });
 
 $routes->group('siswa', function ($routes) {

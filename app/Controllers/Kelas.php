@@ -8,6 +8,13 @@ use App\Models\Kelas as ModelKelas;
 
 class Kelas extends BaseController
 {
+
+    protected $mKelas;
+    public function __construct()
+    {
+        $this->mKelas = new ModelKelas();
+    }
+
     public function index()
     {
         //
@@ -32,16 +39,23 @@ class Kelas extends BaseController
 
         $data['ta'] = $angkatanAktif['id'];
 
-        $mKelas = new ModelKelas();
-        // memastikan tidak ada tahun ajaran yang sama
-        $kelasSiswa = $mKelas->where('id_siswa', $data['id_siswa'])->where('ta', $data['ta'])->first();
-        if ($kelasSiswa) {
-            session()->setFlashdata('error', 'Pada tahun sekarang siswa sudah terdaftar di kelas ini');
+        $kelasTerakhir = $this->mKelas->where('id_siswa', $data['id_siswa'])->orderBy('ta', 'DESC')->first();
+        $taSebelumnya = $mAngkatan->where('id', $kelasTerakhir['ta'])->first()["angkatan"];
+        //memastikan tahun aktif sekarang lebih dari tahun ajaran siswa
+        $tahunAktif = $mAngkatan->where('id', $data['ta'])->first()['angkatan'];
+
+        // dd($tahunAktif, $taSebelumnya, $tahunAktif <= $taSebelumnya);
+
+        if ($tahunAktif <= $taSebelumnya) {
+            session()->setFlashdata('error', 'Tahun ajaran aktif harus lebih dari tahun ajaran siswa sebelumnya');
+            return redirect()->back();
+        } else if ($tahunAktif != $taSebelumnya + 1) {
+            session()->setFlashdata('error', 'Terjadi kesalahan pada tahun ajaran aktif');
             return redirect()->back();
         }
 
         // cek kelas terakhir siswa
-        $kelasTerakhir = $mKelas->where('id_siswa', $data['id_siswa'])->orderBy('id', 'DESC')->first();
+        $kelasTerakhir = $this->mKelas->where('id_siswa', $data['id_siswa'])->orderBy('id', 'DESC')->first();
         // limit kelas hanya sampai 6
         if ($kelasTerakhir) {
             if ($kelasTerakhir['kelas'] >= 6) {
@@ -50,7 +64,7 @@ class Kelas extends BaseController
             }
         }
 
-        $mKelas->insert($data);
+        $this->mKelas->insert($data);
 
         //set flashdata
         session()->setFlashdata('success', 'Data kelas berhasil ditambahkan');
@@ -173,7 +187,7 @@ class Kelas extends BaseController
         $builder->join('angkatan', 'angkatan.id = kelas.ta');
 
         $builder->where('kelas.id_sekolah', session()->get('user')['sekolah']['id']);
-        $builder->where('angkatan.status', 1);
+        // $builder->where('angkatan.status', 1);
         $builder->where('siswa.masuk', $tahunMasuk);
 
         if (!empty($searchValue)) {
@@ -227,15 +241,21 @@ class Kelas extends BaseController
             ->groupBy('id_siswa')
             ->getCompiledSelect();
 
+        $subQueryMaxTa = $mKelas->builder()
+            ->select('id_siswa, MAX(ta) as max_ta')
+            ->where('id_sekolah', session()->get('user')['sekolah']['id'])
+            ->groupBy('id_siswa')
+            ->getCompiledSelect();
+
         // Join dengan subquery untuk mendapatkan data kelas terbaru
         $builder->select('kelas.id, kelas.kelas,  siswa.nama, siswa.nis, siswa.id as siswa_id, angkatan.angkatan as ta');
         $builder->join('siswa', 'siswa.id = kelas.id_siswa');
         $builder->join("($subQuery) as latest_kelas", 'latest_kelas.id_siswa = kelas.id_siswa AND latest_kelas.max_kelas = kelas.kelas');
+        $builder->join("($subQueryMaxTa) as latest_ta", 'latest_ta.id_siswa = kelas.id_siswa AND latest_ta.max_ta = kelas.ta');
         $builder->join('angkatan', 'angkatan.id = kelas.ta');
 
         $builder->where('kelas.id_sekolah', session()->get('user')['sekolah']['id']);
         $builder->where('kelas.kelas', $kelas);
-        // $builder->where('angkatan.status', 1);
         $builder->where('siswa.masuk', $tahunMasuk);
 
         if (!empty($searchValue)) {

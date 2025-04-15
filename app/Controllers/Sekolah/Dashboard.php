@@ -11,9 +11,18 @@ use CodeIgniter\HTTP\ResponseInterface;
 
 class Dashboard extends BaseController
 {
+    protected $mAngkatan;
+    protected $mKelas;
+    protected $mSiswa;
+    protected $mSekolah;
 
-    // construct if not session redirect to login
-    public function __construct() {}
+    public function __construct()
+    {
+        $this->mAngkatan = new ModelAngkatan();
+        $this->mKelas = new ModelKelas();
+        $this->mSiswa = new ModelSiswa();
+        $this->mSekolah = new ModelSekolah();
+    }
 
     public function index()
     {
@@ -28,14 +37,10 @@ class Dashboard extends BaseController
     public function mSiswa()
     {
 
-        $mSiswa = new ModelSiswa();
-        $mKelas = new ModelKelas();
-        $mAngkatan = new ModelAngkatan();
-
         $user  = session()->get('user');
-        $kelas = $mKelas->where('id_sekolah', $user['sekolah']['id'])->findAll();
-        $siswa = $mSiswa->where('id_sekolah', $user['sekolah']['id'])->findAll();
-        $tahun = $mAngkatan->where('id_sekolah', $user['sekolah']['id'])->distinct()->orderBy('angkatan', 'DESC')->findAll();
+        $kelas = $this->mKelas->where('id_sekolah', $user['sekolah']['id'])->findAll();
+        $siswa = $this->mSiswa->where('id_sekolah', $user['sekolah']['id'])->findAll();
+        $tahun = $this->mAngkatan->where('id_sekolah', $user['sekolah']['id'])->distinct()->orderBy('angkatan', 'DESC')->findAll();
 
         helper(['form']);
 
@@ -335,11 +340,13 @@ class Dashboard extends BaseController
 
     public function bulkSiswa()
     {
+        $angkatan = $this->mAngkatan->where('id_sekolah', session()->get('user')['sekolah']['id'])->findAll();
         $data = [
             'title' => 'Tambah Angkatan Siswa',
             'content' => 'sekolah/v_bulk_siswa',
             'apath' => 'bulkSiswa',
-            'user' => session()->get('user')
+            'user' => session()->get('user'),
+            'angkatan' => $angkatan,
         ];
         return view('layouts/v_wrapper', $data);
     }

@@ -7,23 +7,62 @@ use CodeIgniter\HTTP\ResponseInterface;
 
 class Angkatan extends BaseController
 {
+
+    protected $mAngkatan;
+    public function __construct()
+    {
+        $this->mAngkatan = new \App\Models\Angkatan();
+    }
+
     public function index()
     {
-        $modelAngkatan = new \App\Models\Angkatan();
-        $data = $modelAngkatan->findAll();
+        $data = $this->mAngkatan->findAll();
         return $this->response->setJSON($data);
     }
 
     public function add()
     {
-        $modelAngkatan = new \App\Models\Angkatan();
         $data = [
             'angkatan' => $this->request->getPost('angkatan'),
             'deskripsi' => $this->request->getPost('deskripsi'),
             'id_sekolah' => $this->request->getPost('id_sekolah')
         ];
-        $modelAngkatan->insert($data);
+        $angkatanAktif = $this->mAngkatan->where('id_sekolah', $data['id_sekolah'])->where('status', 1)->where('angkatan', $data['angkatan'])->first();
+        if ($angkatanAktif) {
+            session()->setFlashdata('error', 'Angkatan sudah terdaftar');
+            return redirect()->back();
+        }
+        // insert data angkatan
+        $this->mAngkatan->insert($data);
         session()->setFlashdata('success', 'Data angkatan berhasil ditambahkan');
+        return redirect()->back();
+    }
+
+    public function updateTaActive()
+    {
+        $data = [
+            'id' => $this->request->getPost('taAktif')
+        ];
+
+        if ($data['id'] == null) {
+            session()->setFlashdata('success', 'Tidak ada perubahan tahun ajaran aktif');
+            return redirect()->back();
+        }
+
+        $activedId = $this->mAngkatan->where('id_sekolah', session()->get('user')['sekolah']['id'])->where('status', 1)->first()['id'];
+        if ($activedId && $activedId != $data['id']) {
+            $this->mAngkatan->where('id', $activedId)->update($activedId, ['status' => 0]);
+            $this->mAngkatan->where('id', $data['id'])->update($data['id'], ['status' => 1]);
+        }
+
+        session()->setFlashdata('success', 'Tahun ajaran aktif berhasil diubah');
+        return redirect()->back();
+    }
+
+    public function delete($id)
+    {
+        $this->mAngkatan->delete($id);
+        session()->setFlashdata('success', 'Data angkatan berhasil dihapus');
         return redirect()->back();
     }
 }
