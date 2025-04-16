@@ -88,25 +88,24 @@ class Siswa extends BaseController
 
             if (file_exists($filePath)) {
                 unlink($filePath);
-
-                $data = [
-                    'keluar' => date('Y'),
-                    'bukti_keluar' => $namaFile,
-                    'status_keluar' => 'lulus',
-                    'updated_at' => date('Y-m-d H:i:s'),
-                ];
-
-                $siswa = new ModelSiswa();
-                $save = $siswa->update($id, $data);
-
-                if ($save) {
-                    session()->setFlashdata('success', 'Data ijazah berhasil diupload');
-                    return redirect()->back()->with('success', 'Data ijazah berhasil diupload');
-                } else {
-                    session()->setFlashdata('error', 'Gagal mengupload data ijazah');
-                    return redirect()->back()->with('error', 'Gagal mengupload data ijazah');
-                }
             }
+        }
+        $data = [
+            'keluar' => date('Y'),
+            'bukti_keluar' => $namaFile,
+            'status_keluar' => 'lulus',
+            'updated_at' => date('Y-m-d H:i:s'),
+        ];
+
+        $siswa = new ModelSiswa();
+        $save = $siswa->update($id, $data);
+
+        if ($save) {
+            session()->setFlashdata('success', 'Data ijazah berhasil diupload');
+            return redirect()->back()->with('success', 'Data ijazah berhasil diupload');
+        } else {
+            session()->setFlashdata('error', 'Gagal mengupload data ijazah');
+            return redirect()->back()->with('error', 'Gagal mengupload data ijazah');
         }
     }
 
