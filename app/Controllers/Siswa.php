@@ -101,10 +101,8 @@ class Siswa extends BaseController
         $save = $siswa->update($id, $data);
 
         if ($save) {
-            session()->setFlashdata('success', 'Data ijazah berhasil diupload');
             return redirect()->back()->with('success', 'Data ijazah berhasil diupload');
         } else {
-            session()->setFlashdata('error', 'Gagal mengupload data ijazah');
             return redirect()->back()->with('error', 'Gagal mengupload data ijazah');
         }
     }
@@ -128,11 +126,9 @@ class Siswa extends BaseController
         $save = $siswa->update($id, $data);
 
         if ($save) {
-            session()->setFlashdata('success', 'Data surat pindah berhasil diupload');
-            return redirect()->to('/sekolah/siswa');
+            return redirect()->back()->with('success', 'Data surat pindah berhasil diupload');
         } else {
-            session()->setFlashdata('error', 'Gagal mengupload data surat pindah');
-            return redirect()->to('/sekolah/siswa');
+            return redirect()->back()->with('success', 'Data surat pindah berhasil diupload');
         }
     }
 
@@ -154,11 +150,9 @@ class Siswa extends BaseController
         $save = $siswa->update($id, $data);
 
         if ($save) {
-            session()->setFlashdata('success', 'Data surat putus sekolah berhasil diupload');
-            return redirect()->to('/sekolah/siswa');
+            return redirect()->back()->with('success', 'Data surat putus sekolah berhasil diupload');
         } else {
-            session()->setFlashdata('error', 'Gagal mengupload data surat putus sekolah');
-            return redirect()->to('/sekolah/siswa');
+            return redirect()->back()->with('success', 'Data surat putus sekolah berhasil diupload');
         }
     }
 }

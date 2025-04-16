@@ -32,7 +32,7 @@ class Kelas extends BaseController
 
         $siswaAktif = $this->mSiswa->where('id', $data['id_siswa'])->first();
         if ($siswaAktif && $siswaAktif['status_keluar'] != null) {
-            session()->setFlashdata('error', 'Siswa tidak aktif');
+            session()->setFlashdata('error', 'Siswa sudah tidak aktif');
             return redirect()->back();
         }
 
