@@ -75,47 +75,39 @@ class Siswa extends BaseController
 
     public function uploadIjazah()
     {
-        // helper(['form']);
-        // if ($this->request->getMethod() !== 'post') {
-        //     return redirect()->to('/sekolah/siswa');
-        // }
-
-        // $validationRules = [
-        //     'id' => 'required',
-        //     'file' => 'uploaded[file]|max_size[file,1024]|ext_in[file,jpg,png,pdf]'
-        // ];
-
-        // $validated = $this->validate($validationRules);
-
-        // if (!$validated) {
-        //     session()->setFlashdata('error', $this->validator->getErrors());
-        //     return redirect()->to('/sekolah/siswa');
-        // } else {
-
         $id = $this->request->getPost('id');
         $file = $this->request->getFile('bukti_keluar');
-        $namaFile = $file->getName();
-        // $namaFile = $file->getRandomName();
-        $file->move(ROOTPATH . 'public/uploads/surat-keluar');
 
-        $data = [
-            'keluar' => date('Y'),
-            'bukti_keluar' => $namaFile,
-            'status_keluar' => 'lulus',
-            'updated_at' => date('Y-m-d H:i:s'),
-        ];
+        $namaFile = $file->getRandomName();
+        $file->move(ROOTPATH . 'public/uploads/file',  $namaFile);
 
-        $siswa = new ModelSiswa();
-        $save = $siswa->update($id, $data);
+        $mSiswa = new ModelSiswa();
+        $siswa = $mSiswa->find($id);
+        if ($siswa['bukti_keluar'] != null) {
+            $filePath = ROOTPATH . 'public/uploads/file/' . $siswa['bukti_keluar'];
 
-        if ($save) {
-            session()->setFlashdata('success', 'Data ijazah berhasil diupload');
-            return redirect()->to('/sekolah/siswa');
-        } else {
-            session()->setFlashdata('error', 'Gagal mengupload data ijazah');
-            return redirect()->to('/sekolah/siswa');
+            if (file_exists($filePath)) {
+                unlink($filePath);
+
+                $data = [
+                    'keluar' => date('Y'),
+                    'bukti_keluar' => $namaFile,
+                    'status_keluar' => 'lulus',
+                    'updated_at' => date('Y-m-d H:i:s'),
+                ];
+
+                $siswa = new ModelSiswa();
+                $save = $siswa->update($id, $data);
+
+                if ($save) {
+                    session()->setFlashdata('success', 'Data ijazah berhasil diupload');
+                    return redirect()->back()->with('success', 'Data ijazah berhasil diupload');
+                } else {
+                    session()->setFlashdata('error', 'Gagal mengupload data ijazah');
+                    return redirect()->back()->with('error', 'Gagal mengupload data ijazah');
+                }
+            }
         }
-        // }
     }
 
 
@@ -123,8 +115,8 @@ class Siswa extends BaseController
     {
         $id = $this->request->getPost('id');
         $file = $this->request->getFile('bukti_keluar');
-        $namaFile = $file->getName();
-        $file->move(ROOTPATH . 'public/uploads/surat-keluar');
+        $namaFile = $file->getRandomName();
+        $file->move(ROOTPATH . 'public/uploads/file',  $namaFile);
 
         $data = [
             'keluar' => date('Y'),
@@ -149,13 +141,13 @@ class Siswa extends BaseController
     {
         $id = $this->request->getPost('id');
         $file = $this->request->getFile('bukti_keluar');
-        $namaFile = $file->getName();
-        $file->move(ROOTPATH . 'public/uploads/surat-keluar');
+        $namaFile = $file->getRandomName();
+        $file->move(ROOTPATH . 'public/uploads/file',  $namaFile);
 
         $data = [
             'keluar' => date('Y'),
             'bukti_keluar' => $namaFile,
-            'status_keluar' => 'pindah',
+            'status_keluar' => 'putus',
             'updated_at' => date('Y-m-d H:i:s'),
         ];
 

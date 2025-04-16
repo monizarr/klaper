@@ -9,10 +9,11 @@ use App\Models\Kelas as ModelKelas;
 class Kelas extends BaseController
 {
 
-    protected $mKelas;
+    protected $mKelas, $mSiswa;
     public function __construct()
     {
         $this->mKelas = new ModelKelas();
+        $this->mSiswa = new \App\Models\Siswa();
     }
 
     public function index()
@@ -28,6 +29,12 @@ class Kelas extends BaseController
             'kelas' => $this->request->getPost('kelas'),
             'created_at' => date('Y-m-d H:i:s')
         ];
+
+        $siswaAktif = $this->mSiswa->where('id', $data['id_siswa'])->first();
+        if ($siswaAktif && $siswaAktif['status_keluar'] != null) {
+            session()->setFlashdata('error', 'Siswa tidak aktif');
+            return redirect()->back();
+        }
 
         $mAngkatan = new \App\Models\Angkatan();
         $angkatanAktif = $mAngkatan->where('id_sekolah', $data['id_sekolah'])->where('status', 1)->first();
@@ -179,11 +186,18 @@ class Kelas extends BaseController
             ->groupBy('id_siswa')
             ->getCompiledSelect();
 
+        $subQueryMaxTa = $mKelas->builder()
+            ->select('id_siswa, MAX(ta) as max_ta')
+            ->where('id_sekolah', session()->get('user')['sekolah']['id'])
+            ->groupBy('id_siswa')
+            ->getCompiledSelect();
+
 
         // Join dengan subquery untuk mendapatkan data kelas terbaru
         $builder->select('kelas.id, kelas.kelas,  siswa.nama, siswa.nis, siswa.id as siswa_id, angkatan.angkatan as ta, siswa.masuk as tahun_masuk');
         $builder->join('siswa', 'siswa.id = kelas.id_siswa');
         $builder->join("($subQuery) as latest_kelas", 'latest_kelas.id_siswa = kelas.id_siswa AND latest_kelas.max_kelas = kelas.kelas');
+        $builder->join("($subQueryMaxTa) as latest_ta", 'latest_ta.id_siswa = kelas.id_siswa AND latest_ta.max_ta = kelas.ta');
         $builder->join('angkatan', 'angkatan.id = kelas.ta');
 
         $builder->where('kelas.id_sekolah', session()->get('user')['sekolah']['id']);

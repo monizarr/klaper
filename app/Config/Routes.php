@@ -64,7 +64,7 @@ $routes->group('sekolah', ['filter' => 'authsekolah'], function ($routes) {
         $routes->get('', 'Sekolah\Dashboard::mAkademis');
         $routes->get('angkatan/(:num)', 'Sekolah\Dashboard::mAkademisAngkatan/$1');
         $routes->get('get-akademis-angkatan/(:num)', 'Sekolah\Dashboard::getSiswaByAngkatan/$1');
-        $routes->get('angkatan/(:num)/kelas/(:num)', 'Sekolah\Dashboard::mAkademisKelas/$1');
+        $routes->get('angkatan/(:num)/kelas/(:num)', 'Sekolah\Dashboard::mAkademisKelas/$1/$2');
     });
     $routes->post('upload-ijazah', 'Siswa::uploadIjazah');
     $routes->post('upload-spindah', 'Siswa::uploadSrtPindah');

@@ -223,7 +223,7 @@
                 <div class="modal-body">
                     <ul class="nav nav-tabs" id="tabs-<?= $s['id'] ?>" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="tabs-profile-tab-<?= $s['id'] ?>" data-bs-toggle="tab" data-bs-target="#tabs-profile-<?= $s['id'] ?>" type="button" role="tab" aria-controls="tabs-profile-<?= $s['id'] ?>" aria-selected="false">Riwayat Akademis</button>
+                            <button class="nav-link active" id="tabs-profile-tab-<?= $s['id'] ?>" data-bs-toggle="tab" data-bs-target="#tabs-profile-<?= $s['id'] ?>" type="button" role="tab" aria-controls="tabs-profile-<?= $s['id'] ?>" aria-selected="false">Riwayat Akademis</button>
                         </li>
                         <li class="nav-item" role="presentation">
                             <button class="nav-link" id="tabs-lulus-tab-<?= $s['id'] ?>" data-bs-toggle="tab" data-bs-target="#tabs-lulus-<?= $s['id'] ?>" type="button" role="tab" aria-controls="tabs-lulus-<?= $s['id'] ?>" aria-selected="true">Siswa Lulus</button>
@@ -236,51 +236,80 @@
                         </li>
                     </ul>
                     <div class="tab-content" id="tabs-content-<?= $s['id'] ?>">
-
                         <div class="tab-pane fade show active" id="tabs-profile-<?= $s['id'] ?>" role="tabpanel" aria-labelledby="tabs-profile-tab-<?= $s['id'] ?>">
                             <div class="mt-4" id="academic-history-<?= $s['id'] ?>">Memuat data...</div>
                         </div>
                         <div class="tab-pane fade" id="tabs-lulus-<?= $s['id'] ?>" role="tabpanel" aria-labelledby="tabs-lulus-tab-<?= $s['id'] ?>">
-                            <form action="<?= site_url('/sekolah/upload-ijazah'); ?>" method="post" enctype="multipart/form-data">
-                                <?= csrf_field() ?>
-                                <!-- <div class="modal-header">
+                            <div class="modal-body">
+                                <form action="<?= site_url('/sekolah/upload-ijazah'); ?>" method="post" enctype="multipart/form-data">
+                                    <?= csrf_field() ?>
+                                    <!-- <div class="modal-header">
                                     <h5 class="modal-title">Edit Siswa</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div> -->
-                                <div class="modal-body">
                                     <input type="text" hidden name="id" value="<?= $s['id'] ?>" required>
-                                    <div class="col-lg-12">
-                                        <div class="mb-3">
+                                    <div class="row align-items-end mb-3">
+                                        <div class="col-10">
                                             <label class="form-label w-100">Ijazah</label>
                                             <input type="file" class="form-control" name="bukti_keluar">
                                         </div>
+                                        <div class="col-2">
+                                            <!-- submit -->
+                                            <button type="submit" class="btn btn-primary ms-auto" <?= ($s['status_keluar'] != 'lulus' && $s['status_keluar'] != null) ? 'disabled' : '' ?>>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-edit">
+                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                    <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
+                                                    <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" />
+                                                    <path d="M16 5l3 3" />
+                                                </svg>
+                                                Simpan
+                                            </button>
+                                        </div>
                                     </div>
-                                    <!-- submit -->
-                                    <button type="submit" class="btn btn-primary ms-auto" <?= ($s['status_keluar'] != 'lulus' && $s['status_keluar'] != null) ? 'disabled' : '' ?>>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-edit">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                            <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
-                                            <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" />
-                                            <path d="M16 5l3 3" />
-                                        </svg>
-                                        Simpan
-                                    </button>
-                                </div>
-                                <!-- <div class="modal-footer">
-                                    <a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">
-                                        Cancel
-                                    </a>
-                                    <button type="submit" class="btn btn-primary ms-auto">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-edit">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                            <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
-                                            <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" />
-                                            <path d="M16 5l3 3" />
-                                        </svg>
-                                        Ubah
-                                    </button>
-                                </div> -->
-                            </form>
+                                </form>
+                                <form action="<?= site_url('/sekolah/edit-siswa') ?>" method="post" class="modal-content">
+                                    <?php if ($s['keluar'] != null) : ?>
+                                        <div class="col-lg-12">
+                                            <div class="mb-3">
+                                                <label class="form-label"> Status Keluar</label>
+                                                <select class="form-select" name="status_keluar">
+                                                    <option value="lulus" <?= $s['status_keluar'] == 'lulus' ? 'selected' : '' ?>>Lulus</option>
+                                                    <option value="pindah" <?= $s['status_keluar'] == 'pindah' ? 'selected' : '' ?>>Pindah</option>
+                                                    <option value="do" <?= $s['status_keluar'] == 'do' ? 'selected' : '' ?>>Putus Sekolah</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    <?php endif; ?>
+                                    <?php if ($s['bukti_masuk'] != null) : ?>
+                                        <!-- preview image -->
+                                        <div class="col-lg-12">
+                                            <div class="mb-3">
+                                                <label class="form-label w-100">Surat Penerimaan Siswa</label>
+                                                <!-- image/pdf -->
+                                                <?php if (pathinfo($s['bukti_masuk'], PATHINFO_EXTENSION) == 'pdf') : ?>
+                                                    <embed src="<?= base_url(UPLOAD_PATH . '/' . $s['bukti_masuk']) ?>" type="application/pdf" width="100%" height="600px" />
+                                                <?php else : ?>
+                                                    <img src="<?= base_url(UPLOAD_PATH . '/' . $s['bukti_masuk']) ?>" class="img-fluid" alt="bukti" />
+                                                <?php endif; ?>
+                                            </div>
+                                        </div>
+                                    <?php endif; ?>
+                                    <?php if ($s['keluar'] != null) : ?>
+                                        <!-- preview image -->
+                                        <div class="col-lg-12">
+                                            <div class="mb-3">
+                                                <label class="form-label w-100">Surat Alumni</label>
+                                                <!-- image/pdf -->
+                                                <?php if (pathinfo($s['bukti_keluar'], PATHINFO_EXTENSION) == 'pdf') : ?>
+                                                    <embed src="<?= base_url(UPLOAD_PATH . '/' . $s['bukti_keluar']) ?>" type="application/pdf" width="100%" height="600px" />
+                                                <?php else : ?>
+                                                    <img src="<?= base_url(UPLOAD_PATH . '/' . $s['bukti_keluar']) ?>" class="img-fluid" alt="bukti" />
+                                                <?php endif; ?>
+                                            </div>
+                                        </div>
+                                    <?php endif; ?>
+                                </form>
+                            </div>
                         </div>
                         <div class="tab-pane fade" id="tabs-pindah-<?= $s['id'] ?>" role="tabpanel" aria-labelledby="tabs-pindah-tab-<?= $s['id'] ?>">
                             <form action="<?= site_url('/sekolah/upload-spindah'); ?>" method="post" enctype="multipart/form-data">
