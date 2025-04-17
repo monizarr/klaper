@@ -220,7 +220,7 @@
                                         <select class="form-select" name="status_keluar">
                                             <option value="lulus" <?= $s['status_keluar'] == 'lulus' ? 'selected' : '' ?>>Lulus</option>
                                             <option value="pindah" <?= $s['status_keluar'] == 'pindah' ? 'selected' : '' ?>>Pindah</option>
-                                            <option value="do" <?= $s['status_keluar'] == 'do' ? 'selected' : '' ?>>Putus Sekolah</option>
+                                            <option value="do" <?= $s['status_keluar'] == 'putus' ? 'selected' : '' ?>>Putus Sekolah</option>
                                         </select>
                                     </div>
                                 </div>
