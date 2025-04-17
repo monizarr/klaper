@@ -2,14 +2,24 @@
 <div class="page-header d-print-none">
     <div class="container-xl">
         <div class="row g-2 align-items-center">
-            <div class="col">
-                <!-- Page pre-title -->
-                <div class="page-pretitle">
-                    <?= $user["sekolah"]["nama"] ?>
+            <div class="d-flex align-items-end col-1 gap-3">
+                <div class="col">
+                    <a href="javascript:window.history.go(-1);" class="btn btn-primary bg-light text-primary fs-3 p-1" style="border: 1px solid #066fd1; border-radius: 4px; box-sizing: border-box;">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="m-0 p-0" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-left">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path d="M15 6l-6 6l6 6" />
+                        </svg>
+                    </a>
                 </div>
-                <h2 class="page-title">
-                    <?= $title ?>
-                </h2>
+                <div class="col-auto">
+                    <!-- Page pre-title -->
+                    <div class="page-pretitle">
+                        <?= $user["sekolah"]["nama"] ?>
+                    </div>
+                    <h2 class="page-title">
+                        <?= $title ?>
+                    </h2>
+                </div>
             </div>
             <!-- Page title actions -->
             <div class="col-auto ms-auto d-print-none">

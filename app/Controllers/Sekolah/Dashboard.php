@@ -38,19 +38,28 @@ class Dashboard extends BaseController
     {
 
         $user  = session()->get('user');
-        $kelas = $this->mKelas->where('id_sekolah', $user['sekolah']['id'])->findAll();
         $siswa = $this->mSiswa->where('id_sekolah', $user['sekolah']['id'])->findAll();
         $tahun = $this->mAngkatan->where('id_sekolah', $user['sekolah']['id'])->distinct()->orderBy('angkatan', 'DESC')->findAll();
+
+        $resTahun = [];
+        foreach ($tahun as $t) {
+            $jmlSiswa = $this->mSiswa->where('id_sekolah', $user['sekolah']['id'])->where('masuk', $t['id'])->countAllResults();
+            $resTahun[] = [
+                'id' => $t['id'],
+                'angkatan' => $t['angkatan'],
+                'jumlah_siswa' => $jmlSiswa
+            ];
+        }
 
         helper(['form']);
 
         $data = [
-            'title' => 'Manajemen Siswa',
+            'title' => 'Manajemen Data Siswa',
             'content' => 'sekolah/siswa/v_index',
             'apath' => 'mSiswa',
             'siswa' => $siswa,
             'user' => $user,
-            'angkatan' => $tahun
+            'angkatan' => $resTahun,
         ];
 
         return view('layouts/v_wrapper', $data);
@@ -68,7 +77,7 @@ class Dashboard extends BaseController
         helper(['form']);
 
         $data = [
-            'title' => 'Manajemen Siswa',
+            'title' => 'Manajemen Data Siswa',
             'content' => 'sekolah/siswa/v_angkatan',
             'apath' => 'mSiswa',
             'siswa' => $siswa,
@@ -86,19 +95,28 @@ class Dashboard extends BaseController
         $mAngkatan = new ModelAngkatan();
 
         $user  = session()->get('user');
-        $kelas = $mKelas->where('id_sekolah', $user['sekolah']['id'])->findAll();
         $siswa = $mSiswa->where('id_sekolah', $user['sekolah']['id'])->findAll();
         $tahun = $mAngkatan->where('id_sekolah', $user['sekolah']['id'])->distinct()->orderBy('angkatan', 'DESC')->findAll();
+
+        $resTahun = [];
+        foreach ($tahun as $t) {
+            $jmlSiswa = $mSiswa->where('id_sekolah', $user['sekolah']['id'])->where('masuk', $t['id'])->countAllResults();
+            $resTahun[] = [
+                'id' => $t['id'],
+                'angkatan' => $t['angkatan'],
+                'jumlah_siswa' => $jmlSiswa
+            ];
+        }
 
         helper(['form']);
 
         $data = [
-            'title' => 'Manajemen Siswa',
+            'title' => 'Manajemen Data Akademis',
             'content' => 'sekolah/akademis/v_index',
             'apath' => 'mSiswa',
             'siswa' => $siswa,
             'user' => $user,
-            'angkatan' => $tahun
+            'angkatan' => $resTahun
         ];
 
         return view('layouts/v_wrapper', $data);

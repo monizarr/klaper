@@ -40,7 +40,7 @@ class Siswa extends BaseController
     public function getKelasSiswa($id_siswa)
     {
         $mKelas = new ModelKelas();
-        $kelas = $mKelas->select('kelas.kelas, siswa.nama as nama_siswa, angkatan.angkatan as ta');
+        $kelas = $mKelas->select('kelas.id, kelas.kelas, siswa.nama as nama_siswa, angkatan.angkatan as ta');
         $kelas = $mKelas->join('siswa', 'siswa.id = kelas.id_siswa')
             ->join('angkatan', 'angkatan.id = kelas.ta')
             ->where('kelas.id_siswa', $id_siswa)
@@ -83,6 +83,7 @@ class Siswa extends BaseController
 
         $mSiswa = new ModelSiswa();
         $siswa = $mSiswa->find($id);
+
         if ($siswa['bukti_keluar'] != null) {
             $filePath = ROOTPATH . 'public/uploads/file/' . $siswa['bukti_keluar'];
 
@@ -90,6 +91,7 @@ class Siswa extends BaseController
                 unlink($filePath);
             }
         }
+
         $data = [
             'keluar' => date('Y'),
             'bukti_keluar' => $namaFile,
@@ -97,8 +99,7 @@ class Siswa extends BaseController
             'updated_at' => date('Y-m-d H:i:s'),
         ];
 
-        $siswa = new ModelSiswa();
-        $save = $siswa->update($id, $data);
+        $save = $mSiswa->update($id, $data);
 
         if ($save) {
             return redirect()->back()->with('success', 'Data ijazah berhasil diupload');
@@ -114,6 +115,16 @@ class Siswa extends BaseController
         $file = $this->request->getFile('bukti_keluar');
         $namaFile = $file->getRandomName();
         $file->move(ROOTPATH . 'public/uploads/file',  $namaFile);
+
+        $mSiswa = new ModelSiswa();
+        $siswa = $mSiswa->find($id);
+        if ($siswa['bukti_keluar'] != null) {
+            $filePath = ROOTPATH . 'public/uploads/file/' . $siswa['bukti_keluar'];
+
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
+        }
 
         $data = [
             'keluar' => date('Y'),
@@ -138,6 +149,16 @@ class Siswa extends BaseController
         $file = $this->request->getFile('bukti_keluar');
         $namaFile = $file->getRandomName();
         $file->move(ROOTPATH . 'public/uploads/file',  $namaFile);
+
+        $mSiswa = new ModelSiswa();
+        $siswa = $mSiswa->find($id);
+        if ($siswa['bukti_keluar'] != null) {
+            $filePath = ROOTPATH . 'public/uploads/file/' . $siswa['bukti_keluar'];
+
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
+        }
 
         $data = [
             'keluar' => date('Y'),

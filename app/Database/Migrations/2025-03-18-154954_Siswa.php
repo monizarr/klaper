@@ -29,7 +29,7 @@ class Siswa extends Migration
             ],
             'status_keluar' => [
                 'type' => 'ENUM',
-                'constraint' => ['lulus', 'do', 'pindah', 'keluar'],
+                'constraint' => ['lulus', 'pindah', 'putus'],
                 'null' => true
             ],
             'nis' => [

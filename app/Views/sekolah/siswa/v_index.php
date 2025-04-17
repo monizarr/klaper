@@ -8,7 +8,7 @@
                     <?= $user["sekolah"]["nama"] ?>
                 </div>
                 <h2 class="page-title">
-                    Manajemen Siswa
+                    <?= isset($title) ? $title : 'Data Siswa' ?>
                 </h2>
             </div>
         </div>
@@ -60,7 +60,17 @@
                     <div class="card-body row">
                         <?php foreach ($angkatan as $a) : ?>
                             <div class="col-4 btn-group mb-3">
-                                <a href="<?= site_url('/sekolah/siswa/angkatan/' . $a['id']) ?>" class="btn btn-primary py-5 fs-3"><?= $a['angkatan'] ?></a>
+                                <a href="<?= site_url('/sekolah/siswa/angkatan/' . $a['id']) ?>" class="card card-primary py-3 fs-3 text-center text-decoration-none " style="border: 1px solid #066fd1a6; border-radius: 4px; box-sizing: border-box;">
+                                    <h2>
+                                        <?= $a['angkatan'] ?>
+                                    </h2>
+                                    <span>
+                                        Jumlah Siswa
+                                        <span class="badge bg-primary ms-2 text-white">
+                                            <?= $a['jumlah_siswa'] ?>
+                                        </span>
+                                    </span>
+                                </a>
                             </div>
                         <?php endforeach ?>
                     </div>
