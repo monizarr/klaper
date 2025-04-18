@@ -38,7 +38,18 @@ class Dashboard extends BaseController
     {
 
         $user  = session()->get('user');
-        $siswa = $this->mSiswa->where('id_sekolah', $user['sekolah']['id'])->findAll();
+
+        $mSiswa = new ModelSiswa();
+        $builder = $mSiswa->builder();
+        $builder->select('siswa.*, 
+        angkatan_masuk.angkatan AS masuk, 
+        angkatan_keluar.angkatan AS keluar');
+        $builder->join('angkatan angkatan_masuk', 'angkatan_masuk.id = siswa.masuk', 'left');
+        $builder->join('angkatan angkatan_keluar', 'angkatan_keluar.id = siswa.keluar', 'left');
+        $builder->where('siswa.id_sekolah', session()->get('user')['sekolah']['id']);
+        $builder->orderBy('siswa.nama', 'ASC');
+        $siswa = $builder->get()->getResultArray();
+
         $tahun = $this->mAngkatan->where('id_sekolah', $user['sekolah']['id'])->distinct()->orderBy('angkatan', 'DESC')->findAll();
 
         $resTahun = [];
@@ -72,7 +83,23 @@ class Dashboard extends BaseController
 
         $user  = session()->get('user');
         $ta = $mAngkatan->findAll();
-        $siswa = $mSiswa->where('id_sekolah', $user['sekolah']['id'])->where('masuk', $angkatan)->findAll();
+        $angkatanMasuk = $mAngkatan->where('angkatan', $angkatan)->first();
+        if ($angkatanMasuk) {
+            $angkatan = $angkatanMasuk['id'];
+        } else {
+            $angkatan = null;
+        }
+
+        $builder = $mSiswa->builder();
+        $builder->select('siswa.*, 
+        angkatan_masuk.angkatan AS masuk, 
+        angkatan_keluar.angkatan AS keluar');
+        $builder->join('angkatan angkatan_masuk', 'angkatan_masuk.id = siswa.masuk', 'left');
+        $builder->join('angkatan angkatan_keluar', 'angkatan_keluar.id = siswa.keluar', 'left');
+        $builder->where('siswa.id_sekolah', session()->get('user')['sekolah']['id']);
+        $builder->where('siswa.masuk', $angkatan);
+        $builder->orderBy('siswa.nama', 'ASC');
+        $siswa = $builder->get()->getResultArray();
 
         helper(['form']);
 
@@ -209,7 +236,6 @@ class Dashboard extends BaseController
 
     public function getSiswa()
     {
-        $model = new ModelSiswa();
 
         // Ambil parameter dari request DataTables
         $start = $this->request->getVar('start');
@@ -220,19 +246,23 @@ class Dashboard extends BaseController
         $order = $this->request->getVar('order')[0];
 
         // Query builder
-        $builder = $model->builder();
-        $builder->select('siswa.*, angkatan.angkatan AS masuk');
-        $builder->join('angkatan', 'angkatan.id = siswa.masuk');
+        $mSiswa = new ModelSiswa();
+        $builder = $mSiswa->builder();
+        $builder->select('siswa.*, 
+        angkatan_masuk.angkatan AS masuk, 
+        angkatan_keluar.angkatan AS keluar');
+        $builder->join('angkatan angkatan_masuk', 'angkatan_masuk.id = siswa.masuk', 'left');
+        $builder->join('angkatan angkatan_keluar', 'angkatan_keluar.id = siswa.keluar', 'left');
         $builder->where('siswa.id_sekolah', session()->get('user')['sekolah']['id']);
 
         // Filter berdasarkan angkatan jika ada
         if (!empty($angkatan)) {
-            $builder->where('masuk', $angkatan);
+            $builder->where('siswa.masuk', $angkatan);
         }
 
         // Filter pencarian jika ada
         if (!empty($searchValue)) {
-            $builder->like('nama', $searchValue); // Misalnya pencarian berdasarkan nama
+            $builder->like('siswa.nama', $searchValue); // Misalnya pencarian berdasarkan nama
         }
 
         // Hitung total record sebelum limit
@@ -269,12 +299,25 @@ class Dashboard extends BaseController
         $searchValue = $this->request->getVar('search')['value'] ?? '';
         $order = $this->request->getVar('order')[0];
 
+        $mAngkatan = new ModelAngkatan();
+        $angkatanMasuk = $mAngkatan->where('angkatan', $angkatan)->first();
+        if ($angkatanMasuk) {
+            $angkatan = $angkatanMasuk['id'];
+        } else {
+            $angkatan = null;
+        }
+
         // Query builder
-        $builder = $model->builder();
-        $builder->select('siswa.*, angkatan.angkatan AS masuk');
-        $builder->join('angkatan', 'angkatan.id = siswa.masuk');
+        $mSiswa = new ModelSiswa();
+        $builder = $mSiswa->builder();
+        $builder->select('siswa.*, 
+        angkatan_masuk.angkatan AS masuk, 
+        angkatan_keluar.angkatan AS keluar');
+        $builder->join('angkatan angkatan_masuk', 'angkatan_masuk.id = siswa.masuk', 'left');
+        $builder->join('angkatan angkatan_keluar', 'angkatan_keluar.id = siswa.keluar', 'left');
         $builder->where('siswa.id_sekolah', session()->get('user')['sekolah']['id']);
-        $builder->where('masuk', $angkatan);
+        $builder->where('siswa.masuk', $angkatan);
+
 
         // Filter pencarian jika ada
         if (!empty($searchValue)) {
@@ -436,8 +479,8 @@ class Dashboard extends BaseController
             'tempat_lahir' => $this->request->getPost('tempat_lahir'),
             'tgl_lahir' => $this->request->getPost('tgl_lahir'),
             'orang_tua' => $this->request->getPost('ortu'),
-            'masuk' => $this->request->getPost('masuk'),
-            'keluar' => $this->request->getPost('keluar'),
+            // 'masuk' => $this->request->getPost('masuk'),
+            // 'keluar' => $this->request->getPost('keluar'),
             'updated_at' => date('Y-m-d H:i:s')
         ];
 

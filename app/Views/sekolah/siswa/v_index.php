@@ -60,7 +60,7 @@
                     <div class="card-body row">
                         <?php foreach ($angkatan as $a) : ?>
                             <div class="col-4 btn-group mb-3">
-                                <a href="<?= site_url('/sekolah/siswa/angkatan/' . $a['id']) ?>" class="card card-primary py-3 fs-3 text-center text-decoration-none " style="border: 1px solid #066fd1a6; border-radius: 4px; box-sizing: border-box;">
+                                <a href="<?= site_url('/sekolah/siswa/angkatan/' . $a['angkatan']) ?>" class="card card-primary py-3 fs-3 text-center text-decoration-none " style="border: 1px solid #066fd1a6; border-radius: 4px; box-sizing: border-box;">
                                     <h2>
                                         <?= $a['angkatan'] ?>
                                     </h2>
@@ -509,8 +509,6 @@
         $('#nisText').text(nama);
         $('#deleteForm').attr('action', `<?= site_url('/siswa/del-siswa/') ?>${id}`);
     });
-
-
 
     // ajax for modal riwayat akademis
     $(document).ready(function() {

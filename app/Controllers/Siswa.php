@@ -6,6 +6,7 @@ use App\Controllers\BaseController;
 use CodeIgniter\HTTP\ResponseInterface;
 use App\Models\Siswa as ModelSiswa;
 use App\Models\Kelas as ModelKelas;
+use App\Models\Angkatan as ModelAngkatan;
 
 
 class Siswa extends BaseController
@@ -92,8 +93,11 @@ class Siswa extends BaseController
             }
         }
 
+        $mAngkatan = new ModelAngkatan();
+        $angkatanAktif = $mAngkatan->where('status', 1)->first();
+
         $data = [
-            'keluar' => date('Y'),
+            'keluar' => $angkatanAktif['id'],
             'bukti_keluar' => $namaFile,
             'status_keluar' => 'lulus',
             'updated_at' => date('Y-m-d H:i:s'),

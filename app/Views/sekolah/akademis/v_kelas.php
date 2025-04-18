@@ -602,25 +602,6 @@
 
 
 
-
-    // ajax for modal riwayat akademis
-    $(document).ready(function() {
-        $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function(e) {
-            var target = $(e.target).attr("data-bs-target");
-            var id = target.split('-')[2];
-            $.ajax({
-                url: "<?= site_url('/siswa/get-kelas/siswa') ?>",
-                type: "GET",
-                data: {
-                    id: id
-                },
-                success: function(response) {
-                    $('#tabs-profile-' + id).html(response);
-                }
-            });
-        });
-    });
-
     $(document).ready(function() {
         let path = window.location.pathname.split('/');
         let angkatan = path[path.length - 3];

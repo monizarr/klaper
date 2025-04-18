@@ -260,12 +260,7 @@
                                 <div class="col-lg-6">
                                     <div class="mb-3">
                                         <label class="form-label">Tahun Masuk</label>
-                                        <!-- select option for $ta -->
-                                        <select class="form-select" name="masuk">
-                                            <?php foreach ($ta as $i) : ?>
-                                                <option value="<?= $i['id'] ?>" <?= $s['masuk'] == $i['id'] ? 'selected' : '' ?>><?= $i['angkatan'] ?></option>
-                                            <?php endforeach; ?>
-                                        </select>
+                                        <input type="number" step="1" name="masuk" class="form-control" value="<?= $s['masuk'] ?>">
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
@@ -282,7 +277,7 @@
                                         <select class="form-select" name="status_keluar">
                                             <option value="lulus" <?= $s['status_keluar'] == 'lulus' ? 'selected' : '' ?>>Lulus</option>
                                             <option value="pindah" <?= $s['status_keluar'] == 'pindah' ? 'selected' : '' ?>>Pindah</option>
-                                            <option value="do" <?= $s['status_keluar'] == 'do' ? 'selected' : '' ?>>Putus Sekolah</option>
+                                            <option value="do" <?= $s['status_keluar'] == 'putus' ? 'selected' : '' ?>>Putus Sekolah</option>
                                         </select>
                                     </div>
                                 </div>
@@ -301,7 +296,6 @@
                                             <?php else : ?>
                                                 <img src="<?= base_url(UPLOAD_PATH . '/' . $s['bukti_masuk']) ?>" class="img-fluid" alt="bukti" />
                                             <?php endif; ?>
-
                                         </div>
                                     </div>
                                 </div>
@@ -367,8 +361,6 @@
         </div>
     </div>
 </div>
-
-
 
 <script>
     document.querySelectorAll('.modal').forEach(modal => {
