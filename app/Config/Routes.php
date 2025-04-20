@@ -28,6 +28,7 @@ $routes->group('angkatan', function ($routes) {
 
 $routes->group('siswa', function ($routes) {
     $routes->get('/', 'Siswa::index');
+    $routes->get('search', 'Siswa::search');
     $routes->get('show/(:num)', 'Siswa::show/$1');
     $routes->get('get-siswa-angkatan/(:num)', 'Siswa::getSiswaAngkatan/$1');
     $routes->get('get-kelas-siswa/(:num)', 'Siswa::getKelasSiswa/$1');
@@ -42,6 +43,16 @@ $routes->group('kelas', function ($routes) {
     $routes->get('get-kelas-ajax', 'Kelas::getKelasSiswa');
     $routes->get('get-kelas-ajax/(:num)', 'Kelas::getKelasSiswaByTa/$1');
     $routes->get('get-perkelas-ajax/(:num)/(:num)', 'Kelas::getKelasSiswaByKelas/$1/$2');
+});
+
+$routes->group('prestasi', function ($routes) {
+    $routes->get('/', 'Prestasi::index');
+    $routes->post('add', 'Prestasi::add');
+    $routes->post('update', 'Prestasi::update');
+    $routes->post('delete/(:num)', 'Prestasi::delete/$1');
+    $routes->group('ajax', function ($routes) {
+        $routes->get('get', 'Prestasi::getPrestasiAjax');
+    });
 });
 
 $routes->group('sekolah', ['filter' => 'authsekolah'], function ($routes) {

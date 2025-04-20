@@ -14,16 +14,16 @@ class Prestasi extends Model
     protected $protectFields    = true;
     protected $allowedFields    = [
         'id',
-        'prestasi',
+        'kegiatan',
         'tingkat',
+        'tempat',
+        'penyelenggara',
+        'juara',
         'deskripsi',
         'tanggal_prestasi',
         'sertifikat',
         'id_siswa',
         'id_sekolah',
-        'created_at',
-        'updated_at',
-        'deleted_at',
     ];
 
     protected bool $allowEmptyInserts = false;

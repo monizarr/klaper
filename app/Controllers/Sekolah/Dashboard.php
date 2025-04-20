@@ -7,6 +7,7 @@ use App\Models\Siswa as ModelSiswa;
 use App\Models\Kelas as ModelKelas;
 use App\Models\Sekolah as ModelSekolah;
 use App\Models\Angkatan as ModelAngkatan;
+use App\Models\Prestasi;
 use CodeIgniter\HTTP\ResponseInterface;
 
 class Dashboard extends BaseController
@@ -213,11 +214,20 @@ class Dashboard extends BaseController
 
         $mSiswa = new ModelSiswa();
         $mKelas = new ModelKelas();
+        $mPrestasi = new Prestasi();
 
         $user  = session()->get('user');
         $kelas = $mKelas->where('id_sekolah', $user['sekolah']['id'])->findAll();
         $siswa = $mSiswa->where('id_sekolah', $user['sekolah']['id'])->findAll();
         $tahun = $mSiswa->select('masuk')->where('id_sekolah', $user['sekolah']['id'])->distinct()->findAll();
+
+        $prestasi = $mPrestasi->builder();
+        $prestasi->select('prestasi.*, siswa.nama, siswa.nis, siswa.masuk');
+        $prestasi->join('siswa', 'siswa.id = prestasi.id_siswa', 'left');
+        $prestasi->where('prestasi.id_sekolah', session()->get('user')['sekolah']['id']);
+        $prestasi->where('siswa.id_sekolah', session()->get('user')['sekolah']['id']);
+        $prestasi->orderBy('siswa.nama', 'ASC');
+        $prestasi = $prestasi->get()->getResultArray();
 
         helper(['form']);
 
@@ -225,7 +235,7 @@ class Dashboard extends BaseController
             'title' => 'Manajemen Siswa',
             'content' => 'sekolah/v_mprestasi',
             'apath' => 'mSiswa',
-            'siswa' => $siswa,
+            'siswa' => $prestasi,
             'user' => $user,
             'angkatan' => $tahun
         ];

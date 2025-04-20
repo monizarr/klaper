@@ -15,11 +15,23 @@ class Prestasi extends Migration
                 'constraint' => 11,
                 'auto_increment' => true,
             ],
-            'prestasi' => [
+            'kegiatan' => [
                 'type' => 'VARCHAR',
                 'constraint' => 255,
             ],
             'tingkat' => [
+                'type' => 'VARCHAR',
+                'constraint' => 255,
+            ],
+            'tempat' => [
+                'type' => 'VARCHAR',
+                'constraint' => 255,
+            ],
+            'penyelenggara' => [
+                'type' => 'VARCHAR',
+                'constraint' => 255,
+            ],
+            'juara' => [
                 'type' => 'VARCHAR',
                 'constraint' => 255,
             ],
@@ -47,6 +59,7 @@ class Prestasi extends Migration
         $this->forge->createTable('prestasi');
         $this->forge->addForeignKey('id_siswa', 'siswa', 'id', 'CASCADE', 'CASCADE');
         $this->forge->addForeignKey('id_sekolah', 'sekolah', 'id', 'CASCADE', 'CASCADE');
+        $this->forge->addForeignKey('sertifikat', 'file', 'id', 'CASCADE', 'CASCADE');
 
         $seeder = \Config\Database::seeder();
         $seeder->call(PrestasiSeeder::class);

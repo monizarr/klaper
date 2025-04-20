@@ -180,4 +180,19 @@ class Siswa extends BaseController
             return redirect()->back()->with('success', 'Data surat putus sekolah berhasil diupload');
         }
     }
+
+    public function search()
+    {
+        $query = $this->request->getGet('query');
+        $model = new ModelSiswa();
+
+        // Query database sesuai input user
+        $results = $model
+            ->like('nama', $query)
+            ->where('id_sekolah', session()->get('user')['sekolah']['id'])
+            ->findAll();
+
+        // Mengembalikan hasil dalam format JSON
+        return $this->response->setJSON($results);
+    }
 }

@@ -11,8 +11,11 @@ class Prestasi extends Seeder
         $data = [
             [
                 'id' => 1,
-                'prestasi' => 'Juara 1 Lomba Cerdas Cermat',
+                'kegiatan' => 'Juara 1 Lomba Cerdas Cermat',
                 'tingkat' => 'Nasional',
+                'tempat' => 'Jakarta',
+                'penyelenggara' => 'Kementerian Pendidikan',
+                'juara' => 'Juara 1',
                 'tanggal_prestasi' => '2023-05-01',
                 'sertifikat' => 'sertifikat_juara1.pdf',
                 'id_siswa' => 1,
@@ -21,8 +24,11 @@ class Prestasi extends Seeder
             ],
             [
                 'id' => 2,
-                'prestasi' => 'Juara 2 Lomba Matematika',
+                'kegiatan' => 'Juara 2 Lomba Matematika',
                 'tingkat' => 'Provinsi',
+                'tempat' => 'Bandung',
+                'penyelenggara' => 'Dinas Pendidikan Provinsi',
+                'juara' => 'Juara 2',
                 'tanggal_prestasi' => '2023-06-15',
                 'sertifikat' => 'sertifikat_juara2.pdf',
                 'id_siswa' => 2,
@@ -31,8 +37,11 @@ class Prestasi extends Seeder
             ],
             [
                 'id' => 3,
-                'prestasi' => 'Juara Harapan 1 Lomba Sains',
+                'kegiatan' => 'Juara Harapan 1 Lomba Sains',
                 'tingkat' => 'Kabupaten',
+                'tempat' => 'Bogor',
+                'penyelenggara' => 'Dinas Pendidikan Kabupaten',
+                'juara' => 'Juara Harapan 1',
                 'tanggal_prestasi' => '2023-07-20',
                 'sertifikat' => 'sertifikat_harapan1.pdf',
                 'id_siswa' => 3,
