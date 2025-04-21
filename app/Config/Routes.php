@@ -87,7 +87,12 @@ $routes->group('sekolah', ['filter' => 'authsekolah'], function ($routes) {
 $routes->group('admin', function ($routes) {
     $routes->get('/', 'Admin\Dashboard::index');
     $routes->get('dashboard', 'Admin\Dashboard::index');
-    $routes->get('sekolah', 'Admin\Dashboard::mSekolah');
+    $routes->group('sekolah', function ($routes) {
+        $routes->get('', 'Admin\Dashboard::mSekolah');
+        $routes->get('(:num)/angkatan', 'Admin\Dashboard::mAngkatanSekolah/$1');
+        $routes->get('(:num)/angkatan/(:num)/siswa', 'Admin\Dashboard::mSiswaSekolah/$1/$2');
+        $routes->get('sekolah/(:num)/siswa/(:num)', 'Admin\Dashboard::mSekolahSiswa/$1/$2');
+    });
     $routes->get('siswa', 'Admin\Dashboard::mSiswa');
     $routes->get('get-siswa', 'Admin\Dashboard::getSiswa');
     $routes->get('get-sekolah', 'Admin\Dashboard::getSekolah');

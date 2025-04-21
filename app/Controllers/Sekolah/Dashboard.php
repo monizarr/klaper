@@ -39,6 +39,7 @@ class Dashboard extends BaseController
     {
 
         $user  = session()->get('user');
+        $idUser = $user['sekolah']['id'];
 
         $mSiswa = new ModelSiswa();
         $builder = $mSiswa->builder();
@@ -47,15 +48,15 @@ class Dashboard extends BaseController
         angkatan_keluar.angkatan AS keluar');
         $builder->join('angkatan angkatan_masuk', 'angkatan_masuk.id = siswa.masuk', 'left');
         $builder->join('angkatan angkatan_keluar', 'angkatan_keluar.id = siswa.keluar', 'left');
-        $builder->where('siswa.id_sekolah', session()->get('user')['sekolah']['id']);
+        $builder->where('siswa.id_sekolah', $idUser);
         $builder->orderBy('siswa.nama', 'ASC');
         $siswa = $builder->get()->getResultArray();
 
-        $tahun = $this->mAngkatan->where('id_sekolah', $user['sekolah']['id'])->distinct()->orderBy('angkatan', 'DESC')->findAll();
+        $tahun = $this->mAngkatan->where('id_sekolah', $idUser)->distinct()->orderBy('angkatan', 'DESC')->findAll();
 
         $resTahun = [];
         foreach ($tahun as $t) {
-            $jmlSiswa = $this->mSiswa->where('id_sekolah', $user['sekolah']['id'])->where('masuk', $t['id'])->countAllResults();
+            $jmlSiswa = $this->mSiswa->where('id_sekolah', $idUser)->where('masuk', $t['id'])->countAllResults();
             $resTahun[] = [
                 'id' => $t['id'],
                 'angkatan' => $t['angkatan'],

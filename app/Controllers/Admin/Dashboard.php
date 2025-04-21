@@ -8,9 +8,25 @@ use App\Models\Sekolah as ModelSekolah;
 use App\Models\Siswa as ModelSiswa;
 use App\Models\Kelas as ModelKelas;
 use App\Models\UserApp as ModelUserApp;
+use App\Models\Angkatan as ModelAngkatan;
+use App\Models\Prestasi as ModelPrestasi;
 
 class Dashboard extends BaseController
 {
+    protected $mAngkatan;
+    protected $mKelas;
+    protected $mSiswa;
+    protected $mSekolah;
+    protected $mPrestasi;
+
+    public function __construct()
+    {
+        $this->mAngkatan = new ModelAngkatan();
+        $this->mKelas = new ModelKelas();
+        $this->mSiswa = new ModelSiswa();
+        $this->mSekolah = new ModelSekolah();
+        $this->mPrestasi = new ModelPrestasi();
+    }
 
     public function index()
     {
@@ -18,6 +34,7 @@ class Dashboard extends BaseController
             'title' => 'Dashboard',
             'content' => 'adminapp/v_index'
         ];
+        // dd(session()->get('user'));
         return view('layouts/v_wrapper', $data);
     }
 
@@ -75,24 +92,81 @@ class Dashboard extends BaseController
 
     public function mSiswa()
     {
-        $mSiswa = new ModelSiswa();
-        $mSekolah = new ModelSekolah();
-        $tahun = $mSiswa->select('masuk')->distinct()->findAll();
-        $sekolahs = $mSekolah->findAll();
-        // siswa join sekolah
-        $mSiswa->select('siswa.*');
-        $mSiswa->select('sekolah.nama as nama_sekolah');
-        $mSiswa->join('sekolah', 'sekolah.id = siswa.id_sekolah');
+        $sekolahs = $this->mSekolah->findAll();
+        $this->mSiswa->select('siswa.*');
+        $this->mSiswa->select('sekolah.nama as nama_sekolah');
+        $this->mSiswa->join('sekolah', 'sekolah.id = siswa.id_sekolah');
+        $dataSekolah = $this->mSiswa->findAll();
+
+        $dataSekolah = [];
+        foreach ($sekolahs as $s) {
+            $jmlSiswa = $this->mSiswa->where('id_sekolah', $s['id'])->countAllResults();
+            $dataSekolah[] = [
+                'id' => $s['id'],
+                'nama' => $s['nama'],
+                'jumlah_siswa' => $jmlSiswa
+            ];
+        }
 
         $data = [
             'title' => 'Manajemen Siswa',
-            'content' => 'adminapp/v_msiswa',
+            'content' => 'admin/siswa/v_index',
             'apath' => 'mSiswa',
             'user' => session()->get('user'),
-            'angkatan' => $tahun,
-            'sekolah' => $sekolahs,
-            'siswa' => $mSiswa->findAll()
+            'sekolah' => $dataSekolah,
         ];
+
+        return view('layouts/v_wrapper', $data);
+    }
+
+    public function mAngkatanSekolah($id)
+    {
+        $sekolah = $this->mSekolah->find($id);
+        $angkatan = $this->mAngkatan->where('id_sekolah', $id)->findAll();
+
+        $countSiswa = [];
+        foreach ($angkatan as $a) {
+            $jmlSiswa = $this->mSiswa->where('masuk', $a['id'])->countAllResults();
+            $countSiswa[] = [
+                'id' => $a['id'],
+                'angkatan' => $a['angkatan'],
+                'jumlah_siswa' => $jmlSiswa
+            ];
+        }
+
+        $data = [
+            'title' => 'Manajemen Angkatan',
+            'content' => 'admin/siswa/v_angkatan',
+            'apath' => 'mSiswa',
+            'user' => session()->get('user'),
+            'sekolah' => $sekolah,
+            'angkatan' => $countSiswa
+        ];
+
+        return view('layouts/v_wrapper', $data);
+    }
+
+    public function mSiswaSekolah($idSekolah, $angkatan)
+    {
+        $sekolah = $this->mSekolah->find($idSekolah);
+        $angkatan = $this->mAngkatan->select('angkatan.*')->where('angkatan', $angkatan)->where('id_sekolah', $idSekolah)->first();
+
+        $this->mSiswa->select('siswa.*');
+        $this->mSiswa->select('sekolah.nama as nama_sekolah');
+        $this->mSiswa->join('sekolah', 'sekolah.id = siswa.id_sekolah');
+        $this->mSiswa->where('siswa.masuk', $angkatan['id']);
+        $dataSiswa = $this->mSiswa->findAll();
+
+        $data = [
+            'title' => 'Manajemen Siswa',
+            'content' => 'admin/siswa/v_index',
+            'apath' => 'mSiswa',
+            'user' => session()->get('user'),
+            'sekolah' => $sekolah,
+            'angkatan' => $angkatan,
+            'siswa' => $dataSiswa
+        ];
+
         return view('layouts/v_wrapper', $data);
     }
 

@@ -4,7 +4,7 @@
     $path = service('uri')->getPath();
     $path = explode('/', $path);
     // nommor ke 2 dari belakang
-    $role = $path[count($path) - 2];
+    $role = session()->get('user')['username'] == 'admin' ? 'admin' : 'sekolah';
     $active = $path[count($path) - 1];
     ?>
     <div class="container-fluid">
@@ -196,7 +196,7 @@
                     </li>
                 <?php endif; ?>
                 <li class="nav-item <?= $active == 'dashboard' ? 'active' : '' ?>">
-                    <a class="nav-link " href="<?= base_url('sekolah/dashboard') ?>">
+                    <a class="nav-link " href="<?= $role == 'admin' ? base_url('admin/dashboard') : base_url('sekolah/dashboard') ?>">
                         <span class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->
                             <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -211,7 +211,7 @@
                     </a>
                 </li>
                 <li class="nav-item <?= $active == 'siswa'  ? 'active' : '' ?>">
-                    <a class="nav-link" href="<?= base_url('sekolah/siswa') ?>">
+                    <a class="nav-link" href="<?= $role == 'admin' ? base_url('admin/siswa') : base_url('sekolah/siswa') ?>">
                         <span class="nav-link-icon d-md-none d-lg-inline-block">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -237,25 +237,8 @@
                         </span>
                     </a>
                 </li>
-                <!-- <li class="nav-item <?= $active == 'akademis'  ? 'active' : '' ?> dropdown">
-                    <a class="nav-link dropdown-toggle" href="<?= base_url('sekolah/akademis') ?>" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button" aria-expanded="false">
-                        <span class="nav-link-icon d-md-none d-lg-inline-block">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-1">
-                                <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z"></path>
-                            </svg>
-                        </span>
-                        <span class="nav-link-title"> Kelola Data Akademis </span>
-                    </a>
-                    <div class="dropdown-menu">
-                        <div class="dropdown-menu-columns">
-                            <div class="dropdown-menu-column">
-                                <a class="dropdown-item" href="./activity.html"> Activity </a>
-                            </div>
-                        </div>
-                    </div>
-                </li> -->
                 <li class="nav-item <?= $active == 'akademis'  ? 'active' : '' ?>">
-                    <a class="nav-link" href="<?= base_url('sekolah/akademis') ?>">
+                    <a class="nav-link" href="<?= $role == 'admin' ? base_url('admin/akademis') : base_url('sekolah/akademis') ?>">
                         <span class="nav-link-icon d-md-none d-lg-inline-block">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -282,7 +265,7 @@
                     </a>
                 </li>
                 <li class="nav-item <?= $active == 'prestasi'  ? 'active' : '' ?>">
-                    <a class="nav-link" href="<?= base_url('sekolah/prestasi') ?>">
+                    <a class="nav-link" href="<?= $role == 'admin' ? base_url('admin/prestasi') : base_url('sekolah/prestasi') ?>">
                         <span class="nav-link-icon d-md-none d-lg-inline-block">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -338,7 +321,7 @@
                     </li>
                 <?php endif; ?>
                 <li class="nav-item <?= $active == 'profil' ? 'active' : '' ?>">
-                    <a class="nav-link" href="<?= base_url('sekolah/profil') ?>">
+                    <a class="nav-link" href="<?= $role == 'admin' ? base_url('admin/profil') : base_url('sekolah/profil') ?>">
                         <span class="nav-link-icon d-md-none d-lg-inline-block">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-users">
                                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -354,7 +337,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <hr class="dropdown-divider">
+                    <hr class="divider">
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="<?= base_url('auth/sekolah/logout') ?>">
