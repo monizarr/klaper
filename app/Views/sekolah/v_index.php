@@ -33,21 +33,25 @@
     $(document).ready(function() {
         // Fetch data from the API
         $.ajax({
-            url: '<?= base_url('/siswa?id_sekolah=' . session()->get('user')['sekolah']['id']) ?>',
+            url: '<?= base_url('/siswa') ?>',
             method: 'GET',
             success: function(response) {
-                // Process data to group by 'masuk'
-                const yearCounts = {};
-                response.forEach(siswa => {
-                    const year = siswa.masuk;
-                    if (year) {
-                        yearCounts[year] = (yearCounts[year] || 0) + 1;
-                    }
-                });
+                // Example response structure:
+                // {
+                //     "2020": {
+                //         "L": "1",
+                //         "P": "1"
+                //     },
+                //     "2021": {
+                //         "L": "2",
+                //         "P": "3"
+                //     }
+                // }
 
-                // Prepare data for Chart.js
-                const labels = Object.keys(yearCounts);
-                const data = Object.values(yearCounts);
+                // Parse the response
+                const labels = Object.keys(response);
+                const maleData = labels.map(year => parseInt(response[year].L));
+                const femaleData = labels.map(year => parseInt(response[year].P));
 
                 // Create the chart
                 const ctx = document.getElementById('myChart').getContext('2d');
@@ -56,17 +60,38 @@
                     data: {
                         labels: labels,
                         datasets: [{
-                            label: 'Jumlah Siswa per Tahun Masuk',
-                            data: data,
-                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                            borderColor: 'rgba(75, 192, 192, 1)',
-                            borderWidth: 1
-                        }]
+                                label: 'Laki-laki',
+                                data: maleData,
+                                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                                borderColor: 'rgba(54, 162, 235, 1)',
+                                borderWidth: 1
+                            },
+                            {
+                                label: 'Perempuan',
+                                data: femaleData,
+                                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                borderColor: 'rgba(255, 99, 132, 1)',
+                                borderWidth: 1
+                            }
+                        ]
                     },
                     options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: true,
+                                text: 'Jumlah Siswa per Tahun Masuk'
+                            }
+                        },
                         scales: {
                             y: {
                                 beginAtZero: true,
+                                ticks: {
+                                    stepSize: 1
+                                },
                                 title: {
                                     display: true,
                                     text: 'Jumlah Siswa'

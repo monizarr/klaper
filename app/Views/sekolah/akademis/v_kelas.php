@@ -218,7 +218,7 @@
                                     <div class="row align-items-end mb-3">
                                         <div class="col-10">
                                             <label class="form-label w-100">Ijazah</label>
-                                            <input type="file" class="form-control" name="bukti_keluar">
+                                            <input type="file" class="form-control" name="bukti_keluar" accept=".pdf, .jpg, .jpeg, .png" required>
                                         </div>
                                         <div class="col-2">
                                             <!-- submit -->
@@ -290,7 +290,7 @@
                                     <div class="row align-items-end mb-3">
                                         <div class="col-10">
                                             <label class="form-label w-100">Surat Pindah</label>
-                                            <input type="file" class="form-control" name="bukti_keluar">
+                                            <input type="file" class="form-control" name="bukti_keluar" accept=".pdf, .jpg, .jpeg, .png" required>
                                         </div>
                                         <div class="col-2">
                                             <button type="submit" class="btn btn-primary ms-auto" <?= ($s['status_keluar'] != 'pindah' && $s['status_keluar'] != null) ? 'disabled' : '' ?>>
@@ -329,7 +329,7 @@
                                     <div class="row align-items-end mb-3">
                                         <div class="col-10">
                                             <label class="form-label w-100">Surat Keterangan Putus Sekolah</label>
-                                            <input type="file" class="form-control" name="bukti_keluar">
+                                            <input type="file" class="form-control" name="bukti_keluar" accept=".pdf, .jpg, .jpeg, .png" required>
                                         </div>
                                         <div class="col-2">
                                             <button type="submit" class="btn btn-primary ms-auto" <?= ($s['status_keluar'] != 'putus' && $s['status_keluar'] != null) ? 'disabled' : '' ?>>

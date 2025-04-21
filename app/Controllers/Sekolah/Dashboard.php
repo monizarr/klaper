@@ -373,9 +373,15 @@ class Dashboard extends BaseController
             'tempat_lahir' => $this->request->getPost('tempat_lahir'),
             'tgl_lahir' => $this->request->getPost('tgl_lahir'),
             'orang_tua' => $this->request->getPost('ortu'),
-            'masuk' => $this->request->getPost('masuk'),
-            'keluar' => $this->request->getPost('keluar'),
         ];
+
+        $idMasuk = $this->request->getPost('masuk');
+        $angkatanMasuk = $this->mAngkatan->where('angkatan', $idMasuk)->first();
+        if ($angkatanMasuk) {
+            $data['masuk'] = $angkatanMasuk['id'];
+        } else {
+            $data['masuk'] = null;
+        }
 
         $buktiMasuk = $this->request->getFile('bukti_masuk');
         if ($buktiMasuk->isValid() && !$buktiMasuk->hasMoved()) {
@@ -392,7 +398,7 @@ class Dashboard extends BaseController
                 'id_sekolah' => $this->request->getPost('id_sekolah'),
                 'id_siswa' => $id_siswa,
                 'kelas' => 1,
-                'ta' => $this->request->getPost('masuk'),
+                'ta' => $angkatanMasuk['id'],
                 'created_at' => date('Y-m-d H:i:s')
             ];
             $kelas->insert($dataKelas);

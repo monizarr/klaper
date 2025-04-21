@@ -13,19 +13,22 @@ class Siswa extends BaseController
 {
     public function index()
     {
-        $id_sekolah = $this->request->getGet('id_sekolah');
-
         $siswaModel = new ModelSiswa();
-        if (empty($id_sekolah)) {
-            // join with sekolah
-            $select = 'siswa.*, sekolah.nama as nama_sekolah';
-            $siswa = $siswaModel->select($select)->join('sekolah', 'sekolah.id = siswa.id_sekolah')->findAll();
-        } else {
-            $siswa = $siswaModel->where('id_sekolah', $id_sekolah)->findAll();
+        $builder = $siswaModel->builder();
+        $builder->select('angkatan.angkatan as tahun, siswa.jk, COUNT(siswa.id) as jumlah');
+        $builder->join('angkatan', 'angkatan.id = siswa.masuk');
+        $builder->where('siswa.id_sekolah', session()->get('user')['sekolah']['id']);
+        $builder->groupBy(['angkatan.angkatan', 'siswa.jk']);
+        $builder->orderBy('angkatan.angkatan', 'ASC');
+        $result = $builder->get()->getResultArray();
+
+        $angkatan = [];
+        foreach ($result as $row) {
+            $angkatan[$row['tahun']][$row['jk']] = $row['jumlah'];
         }
 
         //return json
-        return $this->response->setJSON($siswa);
+        return $this->response->setJSON($angkatan);
     }
 
     public function show($id)
@@ -76,108 +79,153 @@ class Siswa extends BaseController
 
     public function uploadIjazah()
     {
-        $id = $this->request->getPost('id');
-        $file = $this->request->getFile('bukti_keluar');
+        try {
+            $id = $this->request->getPost('id');
+            $file = $this->request->getFile('bukti_keluar');
 
-        $namaFile = $file->getRandomName();
-        $file->move(ROOTPATH . 'public/uploads/file',  $namaFile);
+            $namaFile = $file->getRandomName();
+            $file->move(ROOTPATH . 'public/uploads/file',  $namaFile);
 
-        $mSiswa = new ModelSiswa();
-        $siswa = $mSiswa->find($id);
+            $mSiswa = new ModelSiswa();
+            $siswa = $mSiswa->find($id);
 
-        if ($siswa['bukti_keluar'] != null) {
-            $filePath = ROOTPATH . 'public/uploads/file/' . $siswa['bukti_keluar'];
-
-            if (file_exists($filePath)) {
-                unlink($filePath);
+            // hanya jpg, png dan pdf
+            $allowedTypes = ['image/jpg', 'image/jpeg', 'image/png', 'application/pdf'];
+            if (!in_array($file->getClientMimeType(), $allowedTypes)) {
+                return redirect()->back()->with('error', 'File harus berupa jpg, png atau pdf');
             }
-        }
+            // max size 2mb
+            if ($file->getSize() > 2 * 1024 * 1024) {
+                return redirect()->back()->with('error', 'File terlalu besar, maksimal 2MB');
+            }
 
-        $mAngkatan = new ModelAngkatan();
-        $angkatanAktif = $mAngkatan->where('status', 1)->first();
+            // delete old file
+            if ($siswa['bukti_keluar'] != null) {
+                $filePath = ROOTPATH . 'public/uploads/file/' . $siswa['bukti_keluar'];
 
-        $data = [
-            'keluar' => $angkatanAktif['id'],
-            'bukti_keluar' => $namaFile,
-            'status_keluar' => 'lulus',
-            'updated_at' => date('Y-m-d H:i:s'),
-        ];
+                if (file_exists($filePath)) {
+                    unlink($filePath);
+                }
+            }
 
-        $save = $mSiswa->update($id, $data);
+            $mAngkatan = new ModelAngkatan();
+            $angkatanAktif = $mAngkatan->where('status', 1)->first();
+            if (!$angkatanAktif) {
+                return redirect()->back()->with('error', 'Tidak ada angkatan aktif');
+            }
+            $data = [
+                'keluar' => $angkatanAktif['id'],
+                'bukti_keluar' => $namaFile,
+                'status_keluar' => 'lulus',
+                'updated_at' => date('Y-m-d H:i:s'),
+            ];
 
-        if ($save) {
+            $mSiswa->update($id, $data);
+
             return redirect()->back()->with('success', 'Data ijazah berhasil diupload');
-        } else {
-            return redirect()->back()->with('error', 'Gagal mengupload data ijazah');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal mengupload data ijazah :' . $e->getMessage());
         }
     }
 
 
     public function uploadSrtPindah()
     {
-        $id = $this->request->getPost('id');
-        $file = $this->request->getFile('bukti_keluar');
-        $namaFile = $file->getRandomName();
-        $file->move(ROOTPATH . 'public/uploads/file',  $namaFile);
+        try {
 
-        $mSiswa = new ModelSiswa();
-        $siswa = $mSiswa->find($id);
-        if ($siswa['bukti_keluar'] != null) {
-            $filePath = ROOTPATH . 'public/uploads/file/' . $siswa['bukti_keluar'];
+            $id = $this->request->getPost('id');
+            $file = $this->request->getFile('bukti_keluar');
+            $namaFile = $file->getRandomName();
+            $file->move(ROOTPATH . 'public/uploads/file',  $namaFile);
 
-            if (file_exists($filePath)) {
-                unlink($filePath);
+            $mSiswa = new ModelSiswa();
+            $siswa = $mSiswa->find($id);
+
+            // hanya jpg, png dan pdf
+            $allowedTypes = ['image/jpg', 'image/jpeg', 'image/png', 'application/pdf'];
+            if (!in_array($file->getClientMimeType(), $allowedTypes)) {
+                return redirect()->back()->with('error', 'File harus berupa jpg, png atau pdf');
             }
-        }
+            // max size 2mb
+            if ($file->getSize() > 2 * 1024 * 1024) {
+                return redirect()->back()->with('error', 'File terlalu besar, maksimal 2MB');
+            }
 
-        $data = [
-            'keluar' => date('Y'),
-            'bukti_keluar' => $namaFile,
-            'status_keluar' => 'pindah',
-            'updated_at' => date('Y-m-d H:i:s'),
-        ];
+            if ($siswa['bukti_keluar'] != null) {
+                $filePath = ROOTPATH . 'public/uploads/file/' . $siswa['bukti_keluar'];
 
-        $siswa = new ModelSiswa();
-        $save = $siswa->update($id, $data);
+                if (file_exists($filePath)) {
+                    unlink($filePath);
+                }
+            }
 
-        if ($save) {
-            return redirect()->back()->with('success', 'Data surat pindah berhasil diupload');
-        } else {
-            return redirect()->back()->with('success', 'Data surat pindah berhasil diupload');
+            $data = [
+                'keluar' => date('Y'),
+                'bukti_keluar' => $namaFile,
+                'status_keluar' => 'pindah',
+                'updated_at' => date('Y-m-d H:i:s'),
+            ];
+
+            $siswa = new ModelSiswa();
+            $save = $siswa->update($id, $data);
+
+            if ($save) {
+                return redirect()->back()->with('success', 'Data surat pindah berhasil diupload');
+            } else {
+                return redirect()->back()->with('success', 'Data surat pindah berhasil diupload');
+            }
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal mengupload data surat pindah :' . $e->getMessage());
         }
     }
 
     public function uploadSrtKeluar()
     {
-        $id = $this->request->getPost('id');
-        $file = $this->request->getFile('bukti_keluar');
-        $namaFile = $file->getRandomName();
-        $file->move(ROOTPATH . 'public/uploads/file',  $namaFile);
+        try {
 
-        $mSiswa = new ModelSiswa();
-        $siswa = $mSiswa->find($id);
-        if ($siswa['bukti_keluar'] != null) {
-            $filePath = ROOTPATH . 'public/uploads/file/' . $siswa['bukti_keluar'];
+            $id = $this->request->getPost('id');
+            $file = $this->request->getFile('bukti_keluar');
+            $namaFile = $file->getRandomName();
+            $file->move(ROOTPATH . 'public/uploads/file',  $namaFile);
 
-            if (file_exists($filePath)) {
-                unlink($filePath);
+            $mSiswa = new ModelSiswa();
+            $siswa = $mSiswa->find($id);
+
+            // hanya jpg, png dan pdf
+            $allowedTypes = ['image/jpg', 'image/jpeg', 'image/png', 'application/pdf'];
+            if (!in_array($file->getClientMimeType(), $allowedTypes)) {
+                return redirect()->back()->with('error', 'File harus berupa jpg, png atau pdf');
             }
-        }
+            // max size 2mb
+            if ($file->getSize() > 2 * 1024 * 1024) {
+                return redirect()->back()->with('error', 'File terlalu besar, maksimal 2MB');
+            }
 
-        $data = [
-            'keluar' => date('Y'),
-            'bukti_keluar' => $namaFile,
-            'status_keluar' => 'putus',
-            'updated_at' => date('Y-m-d H:i:s'),
-        ];
+            if ($siswa['bukti_keluar'] != null) {
+                $filePath = ROOTPATH . 'public/uploads/file/' . $siswa['bukti_keluar'];
 
-        $siswa = new ModelSiswa();
-        $save = $siswa->update($id, $data);
+                if (file_exists($filePath)) {
+                    unlink($filePath);
+                }
+            }
 
-        if ($save) {
-            return redirect()->back()->with('success', 'Data surat putus sekolah berhasil diupload');
-        } else {
-            return redirect()->back()->with('success', 'Data surat putus sekolah berhasil diupload');
+            $data = [
+                'keluar' => date('Y'),
+                'bukti_keluar' => $namaFile,
+                'status_keluar' => 'putus',
+                'updated_at' => date('Y-m-d H:i:s'),
+            ];
+
+            $siswa = new ModelSiswa();
+            $save = $siswa->update($id, $data);
+
+            if ($save) {
+                return redirect()->back()->with('success', 'Data surat putus sekolah berhasil diupload');
+            } else {
+                return redirect()->back()->with('success', 'Data surat putus sekolah berhasil diupload');
+            }
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal mengupload data surat putus sekolah :' . $e->getMessage());
         }
     }
 
