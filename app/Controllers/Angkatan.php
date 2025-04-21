@@ -49,9 +49,12 @@ class Angkatan extends BaseController
             return redirect()->back();
         }
 
-        $activedId = $this->mAngkatan->where('id_sekolah', session()->get('user')['sekolah']['id'])->where('status', 1)->first()['id'];
-        if ($activedId && $activedId != $data['id']) {
-            $this->mAngkatan->where('id', $activedId)->update($activedId, ['status' => 0]);
+
+        $activedId = $this->mAngkatan->where('id_sekolah', session()->get('user')['sekolah']['id'])->where('status', 1)->first();
+        if (!$activedId) {
+            $this->mAngkatan->where('id', $data['id'])->update($data['id'], ['status' => 1]);
+        } else {
+            $this->mAngkatan->where('id', $activedId['id'])->update($activedId['id'], ['status' => 0]);
             $this->mAngkatan->where('id', $data['id'])->update($data['id'], ['status' => 1]);
         }
 
