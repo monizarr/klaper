@@ -366,15 +366,17 @@
     });
 
     $(document).ready(function() {
+        // get angkatan from last path
+        const path = window.location.pathname;
+        const segments = path.split('/');
+        const angkatan = segments[segments.length - 1];
         let table = $('#userTable').DataTable({
             "processing": true,
             "serverSide": true,
             "ajax": {
-                "url": "<?= site_url('/prestasi/ajax/get') ?>",
+                "url": "<?= site_url('/prestasi/ajax/get') ?>/" + angkatan,
+                "dataType": "json",
                 "type": "GET",
-                "data": function(d) {
-                    d.angkatan = $('#dropdown-angkatan').attr('data-selected'); // Tambahkan parameter angkatan
-                }
             },
             "columns": [{
                     "data": "nis"

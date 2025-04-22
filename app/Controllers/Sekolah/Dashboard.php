@@ -120,7 +120,6 @@ class Dashboard extends BaseController
     public function mAkademis()
     {
         $mSiswa = new ModelSiswa();
-        $mKelas = new ModelKelas();
         $mAngkatan = new ModelAngkatan();
 
         $user  = session()->get('user');
@@ -214,12 +213,49 @@ class Dashboard extends BaseController
     {
 
         $mSiswa = new ModelSiswa();
-        $mKelas = new ModelKelas();
+        $mAngkatan = new ModelAngkatan();
         $mPrestasi = new Prestasi();
 
         $user  = session()->get('user');
-        $kelas = $mKelas->where('id_sekolah', $user['sekolah']['id'])->findAll();
         $siswa = $mSiswa->where('id_sekolah', $user['sekolah']['id'])->findAll();
+        $tahun = $mAngkatan->where('id_sekolah', $user['sekolah']['id'])->distinct()->orderBy('angkatan', 'DESC')->findAll();
+
+        $resTahun = [];
+        foreach ($tahun as $t) {
+            $jmlSiswa = $mPrestasi
+                ->where('id_sekolah', $user['sekolah']['id'])
+                ->where('tanggal_prestasi >=', $t['angkatan'] . '-01-01')
+                ->where('tanggal_prestasi <=', $t['angkatan'] . '-12-31')
+                ->countAllResults();
+
+            $resTahun[] = [
+                'id' => $t['id'],
+                'angkatan' => $t['angkatan'],
+                'jumlah_siswa' => $jmlSiswa
+            ];
+        }
+
+        helper(['form']);
+
+        $data = [
+            'title' => 'Manajemen Data Prestasi',
+            'content' => 'sekolah/prestasi/v_index',
+            'apath' => 'mSiswa',
+            'siswa' => $siswa,
+            'user' => $user,
+            'angkatan' => $resTahun
+        ];
+
+        return view('layouts/v_wrapper', $data);
+    }
+
+    public function mPrestasiByAngkatan($idAngkatan)
+    {
+
+        $mSiswa = new ModelSiswa();
+        $mPrestasi = new Prestasi();
+
+        $user  = session()->get('user');
         $tahun = $mSiswa->select('masuk')->where('id_sekolah', $user['sekolah']['id'])->distinct()->findAll();
 
         $prestasi = $mPrestasi->builder();
@@ -227,6 +263,10 @@ class Dashboard extends BaseController
         $prestasi->join('siswa', 'siswa.id = prestasi.id_siswa', 'left');
         $prestasi->where('prestasi.id_sekolah', session()->get('user')['sekolah']['id']);
         $prestasi->where('siswa.id_sekolah', session()->get('user')['sekolah']['id']);
+
+        if ($idAngkatan != null) {
+            $prestasi->where('siswa.masuk', $idAngkatan);
+        }
         $prestasi->orderBy('siswa.nama', 'ASC');
         $prestasi = $prestasi->get()->getResultArray();
 
@@ -234,7 +274,7 @@ class Dashboard extends BaseController
 
         $data = [
             'title' => 'Manajemen Siswa',
-            'content' => 'sekolah/v_mprestasi',
+            'content' => 'sekolah/prestasi/v_angkatan',
             'apath' => 'mSiswa',
             'siswa' => $prestasi,
             'user' => $user,

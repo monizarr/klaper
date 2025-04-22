@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use App\Models\Angkatan;
 use App\Models\Prestasi as ModelsPrestasi;
 use CodeIgniter\HTTP\ResponseInterface;
 
@@ -44,7 +45,7 @@ class Prestasi extends BaseController
     }
 
     // get data prestasi for datatable
-    public function getPrestasiAjax()
+    public function getPrestasiAjax($angkatan)
     {
 
         // Ambil parameter dari request DataTables
@@ -52,8 +53,11 @@ class Prestasi extends BaseController
         $length = $this->request->getVar('length');
         $draw = $this->request->getVar('draw');
         $searchValue = $this->request->getVar('search')['value'] ?? '';
-        $angkatan = $this->request->getGet('angkatan'); // Ambil parameter angkatan dari request
         $order = $this->request->getVar('order')[0];
+
+        // konversi $angkatan ke tipe date dengan bulan 01 dan tanggal 01
+        $awalAngkatan = date('Y-m-d', strtotime($angkatan . '-01-01'));
+        $akhirAngkatan = date('Y-m-d', strtotime($angkatan . '-12-31'));
 
         // Query builder
         $mPrestasi = new ModelsPrestasi();
@@ -62,11 +66,9 @@ class Prestasi extends BaseController
         $builder->join('siswa', 'siswa.id = prestasi.id_siswa', 'left');
         $builder->where('prestasi.id_sekolah', session()->get('user')['sekolah']['id']);
         $builder->where('siswa.id_sekolah', session()->get('user')['sekolah']['id']);
-
-        // Filter berdasarkan angkatan jika ada
-        if (!empty($angkatan)) {
-            $builder->where('siswa.masuk', $angkatan);
-        }
+        // range data sesuai prestasi.tanggal_prestasi
+        $builder->where('prestasi.tanggal_prestasi >=', $awalAngkatan);
+        $builder->where('prestasi.tanggal_prestasi <=', $akhirAngkatan);
 
         // Filter pencarian jika ada
         if (!empty($searchValue)) {

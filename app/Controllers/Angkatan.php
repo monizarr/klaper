@@ -36,7 +36,7 @@ class Angkatan extends BaseController
         $this->mAngkatan->insert($data);
         session()->setFlashdata('success', 'Data angkatan berhasil ditambahkan');
         return redirect()->back();
-    }
+    } 
 
     public function updateTaActive()
     {

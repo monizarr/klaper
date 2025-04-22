@@ -51,7 +51,7 @@ $routes->group('prestasi', function ($routes) {
     $routes->post('update', 'Prestasi::update');
     $routes->post('delete/(:num)', 'Prestasi::delete/$1');
     $routes->group('ajax', function ($routes) {
-        $routes->get('get', 'Prestasi::getPrestasiAjax');
+        $routes->get('get/(:num)', 'Prestasi::getPrestasiAjax/$1');
     });
 });
 
@@ -70,6 +70,7 @@ $routes->group('sekolah', ['filter' => 'authsekolah'], function ($routes) {
     });
     $routes->group('prestasi', function ($routes) {
         $routes->get('', 'Sekolah\Dashboard::mPrestasi');
+        $routes->get('angkatan/(:num)', 'Sekolah\Dashboard::mPrestasiByAngkatan/$1');
     });
     $routes->group('akademis', function ($routes) {
         $routes->get('', 'Sekolah\Dashboard::mAkademis');
