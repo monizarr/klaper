@@ -249,7 +249,7 @@ class Dashboard extends BaseController
         return view('layouts/v_wrapper', $data);
     }
 
-    public function mPrestasiByAngkatan($idAngkatan)
+    public function mPrestasiByAngkatan($angkatan)
     {
 
         $mSiswa = new ModelSiswa();
@@ -264,8 +264,9 @@ class Dashboard extends BaseController
         $prestasi->where('prestasi.id_sekolah', session()->get('user')['sekolah']['id']);
         $prestasi->where('siswa.id_sekolah', session()->get('user')['sekolah']['id']);
 
-        if ($idAngkatan != null) {
-            $prestasi->where('siswa.masuk', $idAngkatan);
+        if ($angkatan != null) {
+            $prestasi->where('prestasi.tanggal_prestasi >=', $angkatan . '-01-01');
+            $prestasi->where('prestasi.tanggal_prestasi <=', $angkatan . '-12-31');
         }
         $prestasi->orderBy('siswa.nama', 'ASC');
         $prestasi = $prestasi->get()->getResultArray();
@@ -276,7 +277,7 @@ class Dashboard extends BaseController
             'title' => 'Manajemen Siswa',
             'content' => 'sekolah/prestasi/v_angkatan',
             'apath' => 'mSiswa',
-            'siswa' => $prestasi,
+            'prestasi' => $prestasi,
             'user' => $user,
             'angkatan' => $tahun
         ];

@@ -192,7 +192,7 @@
     </div>
 </div>
 
-<?php foreach ($siswa as $s) : ?>
+<?php foreach ($prestasi as $s) : ?>
     <div class="modal fade" id="modal-edit-<?= $s['id'] ?>" tabindex="-1" aria-labelledby="modal-edit-label-<?= $s['id'] ?>" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -397,7 +397,23 @@
                     "data": "penyelenggara"
                 },
                 {
-                    "data": "juara"
+                    "data": "juara",
+                    "render": function(data) {
+                        if (data == 'juara1') {
+                            return 'Juara 1';
+                        } else if (data == 'juara2') {
+                            return 'Juara 2';
+                        } else if (data == 'juara3') {
+                            return 'Juara 3';
+                        } else if (data == 'harapan1') {
+                            return 'Harapan 1';
+                        } else if (data == 'harapan2') {
+                            return 'Harapan 2';
+                        } else if (data == 'harapan3') {
+                            return 'Harapan 3';
+                        }
+                        return data;
+                    }
                 },
                 {
                     "data": "sertifikat",
