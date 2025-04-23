@@ -90,9 +90,13 @@
                         <h3 class="card-title">Pilih Sekolah</h3>
                     </div>
                     <div class="card-body row">
+                        <?php
+                        $idSekolah =  explode('/', current_url());
+                        $idSekolah = $idSekolah[count($idSekolah) - 2];
+                        ?>
                         <?php foreach ($angkatan as $a) : ?>
                             <div class="col-4 btn-group mb-3">
-                                <a href="<?= site_url('/admin/sekolah/' . $a['id'] . '/angkatan/' . $a['angkatan'] . '/siswa') ?>" class="card card-primary py-3 fs-3 text-center text-decoration-none " style="border: 1px solid #066fd1a6; border-radius: 4px; box-sizing: border-box;">
+                                <a href="<?= site_url('/admin/sekolah/' . $idSekolah . '/angkatan/' . $a['angkatan']) ?>" class="card card-primary py-3 fs-3 text-center text-decoration-none " style="border: 1px solid #066fd1a6; border-radius: 4px; box-sizing: border-box;">
                                     <h2>
                                         <?= $a['angkatan'] ?>
                                     </h2>

@@ -27,7 +27,7 @@ class Auth extends BaseController
         $user = $sekolahModel->where('username', $username)->first();
 
         if (!isset($user)) {
-            return redirect()->to('/sekolah/login')->withInput()->with('error', 'Username tidak ditemukan');
+            return redirect()->to('/auth/sekolah/login')->withInput()->with('error', 'Username tidak ditemukan');
         }
 
         if ($user['status'] == 'a') {
@@ -42,9 +42,9 @@ class Auth extends BaseController
                 return redirect()->to('/sekolah/dashboard');
             }
         } else {
-            return redirect()->to('/sekolah/login')->withInput()->with('error', 'Status sekolah tidak aktif');
+            return redirect()->to('/auth/sekolah/login')->withInput()->with('error', 'Status sekolah tidak aktif');
         }
-        return redirect()->to('/sekolah/login')->withInput()->with('error', 'Login failed');
+        return redirect()->to('/auth/sekolah/login')->withInput()->with('error', 'Login failed');
     }
 
     public function loginAdmin()
@@ -88,7 +88,7 @@ class Auth extends BaseController
     public function sekolahLogout()
     {
         session()->destroy();
-        return redirect()->to('/auth/sekolah/login');
+        return redirect()->to('/auth/auth/sekolah/login');
     }
 
     public function adminLogout()

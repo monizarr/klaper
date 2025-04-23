@@ -126,7 +126,7 @@ class Dashboard extends BaseController
 
         $countSiswa = [];
         foreach ($angkatan as $a) {
-            $jmlSiswa = $this->mSiswa->where('masuk', $a['id'])->countAllResults();
+            $jmlSiswa = $this->mSiswa->where('id_sekolah', $id)->where('masuk', $a['id'])->countAllResults();
             $countSiswa[] = [
                 'id' => $a['id'],
                 'angkatan' => $a['angkatan'],
@@ -155,11 +155,12 @@ class Dashboard extends BaseController
         $this->mSiswa->select('sekolah.nama as nama_sekolah');
         $this->mSiswa->join('sekolah', 'sekolah.id = siswa.id_sekolah');
         $this->mSiswa->where('siswa.masuk', $angkatan['id']);
+        $this->mSiswa->where('siswa.id_sekolah', $idSekolah);
         $dataSiswa = $this->mSiswa->findAll();
 
         $data = [
             'title' => 'Manajemen Siswa',
-            'content' => 'admin/siswa/v_index',
+            'content' => 'admin/siswa/v_tahun',
             'apath' => 'mSiswa',
             'user' => session()->get('user'),
             'sekolah' => $sekolah,
