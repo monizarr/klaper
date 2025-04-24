@@ -1,3 +1,7 @@
+<?php
+$idSekolah =  explode('/', current_url());
+$idSekolah = $idSekolah[count($idSekolah) - 3];
+?>
 <!-- Page header -->
 <div class="page-header d-print-none">
     <div class="container-xl">
@@ -70,7 +74,7 @@
                     <div class="card-body row">
                         <?php for ($i = 1; $i <= 6; $i++) : ?>
                             <div class="col-4 btn-group mb-3 bg-light" style="background-color: #fff;">
-                                <a href="<?= site_url('/sekolah/akademis/angkatan/' . $angkatan . '/kelas/' . $i) ?>" class="btn btn-primary bg-light text-primary py-5 fs-3" style="border: 1px solid #066fd1; border-radius: 4px; box-sizing: border-box;">
+                                <a href="<?= site_url('/admin/sekolah/' . $idSekolah . '/angkatan/' . $angkatan['angkatan'] . '/kelas/' . $i) ?>" class="btn btn-primary bg-light text-primary py-5 fs-3" style="border: 1px solid #066fd1; border-radius: 4px; box-sizing: border-box;">
                                     <span class="fs-3">
                                         Kelas <?= $i ?>
                                     </span>
@@ -120,7 +124,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <input type="text" hidden name="id_sekolah" value="<?= $user["sekolah"]["id"] ?>">
+                <input type="text" hidden name="id_sekolah" value="<?= $idSekolah ?>">
                 <!-- status masuk -->
                 <div class="mb-3">
                     <label class="form-label w-100">Status Masuk</label>
@@ -408,7 +412,7 @@
                         <div class="mt-4 row">
                             <form method="post" class="col-md-6" action="<?= site_url('/kelas/add') ?>" >
                                 <input type="text" hidden class="form-control" name="id_siswa" required value="${siswaId}" placeholder="Tahun Ajaran">
-                                <input type="text" hidden class="form-control" name="id_sekolah" required value="<?= $user['sekolah']['id'] ?>" placeholder="Tahun Ajaran">
+                                <input type="text" hidden class="form-control" name="id_sekolah" required value="<?= $idSekolah ?>" placeholder="Tahun Ajaran">
                                 <div class="row" hidden>
                                     <div class="col-lg-6">
                                         <div class="mb-3">
@@ -435,7 +439,7 @@
                             
                             <form method="post" class="col-md-6 mb-2" action="<?= site_url('/kelas/add') ?>" >
                                 <input type="text" hidden class="form-control" name="id_siswa" required value="${siswaId}" placeholder="Tahun Ajaran">
-                                <input type="text" hidden class="form-control" name="id_sekolah" required value="<?= $user['sekolah']['id'] ?>" placeholder="Tahun Ajaran">
+                                <input type="text" hidden class="form-control" name="id_sekolah" required value="<?= $idSekolah ?>" placeholder="Tahun Ajaran">
                                 <div class="row" hidden>
                                     <div class="col-lg-6">
                                         <div class="mb-3">

@@ -43,6 +43,7 @@ $routes->group('kelas', function ($routes) {
     $routes->get('get-kelas-ajax', 'Kelas::getKelasSiswa');
     $routes->get('get-kelas-ajax/(:num)', 'Kelas::getKelasSiswaByTa/$1');
     $routes->get('get-perkelas-ajax/(:num)/(:num)', 'Kelas::getKelasSiswaByKelas/$1/$2');
+    $routes->get('admin-get-perkelas-ajax/(:num)/(:num)/(:num)', 'Kelas::getKelasSiswaByKelasAdmin/$1/$2/$3');
 });
 
 $routes->group('prestasi', function ($routes) {
@@ -92,7 +93,7 @@ $routes->group('admin', function ($routes) {
         $routes->get('', 'Admin\Dashboard::mSekolah');
         $routes->get('(:num)/angkatan', 'Admin\Dashboard::mAngkatanSekolah/$1');
         $routes->get('(:num)/angkatan/(:num)', 'Admin\Dashboard::mSiswaSekolah/$1/$2');
-        $routes->get('(:num)/angkatan/(:num)/siswa/', 'Admin\Dashboard::mSekolahSiswa/$1/$2');
+        $routes->get('(:num)/angkatan/(:num)/kelas/(:num)', 'Admin\Dashboard::mSiswaKelas/$1/$2/$3');
     });
     $routes->get('siswa', 'Admin\Dashboard::mSiswa');
     $routes->get('get-siswa', 'Admin\Dashboard::getSiswa');

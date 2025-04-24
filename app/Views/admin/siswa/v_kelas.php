@@ -1,3 +1,7 @@
+<?php
+$idSekolah =  explode('/', current_url());
+$idSekolah = $idSekolah[count($idSekolah) - 3];
+?>
 <!-- Page header -->
 <div class="page-header d-print-none">
     <div class="container-xl">
@@ -100,7 +104,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <input type="text" hidden name="id_sekolah" value="<?= $user["sekolah"]["id"] ?>">
+                <input type="text" hidden name="id_sekolah" value="<?= $idSekolah ?>">
                 <!-- status masuk -->
                 <div class="mb-3">
                     <label class="form-label w-100">Status Masuk</label>
@@ -416,7 +420,7 @@
                         <div class="mt-4 row">
                             <form method="post" class="col-md-6" action="<?= site_url('/kelas/add') ?>" >
                                 <input type="text" hidden class="form-control" name="id_siswa" required value="${siswaId}" placeholder="Tahun Ajaran">
-                                <input type="text" hidden class="form-control" name="id_sekolah" required value="<?= $user['sekolah']['id'] ?>" placeholder="Tahun Ajaran">
+                                <input type="text" hidden class="form-control" name="id_sekolah" required value="<?= $idSekolah ?>" placeholder="Tahun Ajaran">
                                 <div class="row" hidden>
                                     <div class="col-lg-6">
                                         <div class="mb-3">
@@ -443,7 +447,7 @@
                             
                             <form method="post" class="col-md-6 mb-2" action="<?= site_url('/kelas/add') ?>" >
                                 <input type="text" hidden class="form-control" name="id_siswa" required value="${siswaId}" placeholder="Tahun Ajaran">
-                                <input type="text" hidden class="form-control" name="id_sekolah" required value="<?= $user['sekolah']['id'] ?>" placeholder="Tahun Ajaran">
+                                <input type="text" hidden class="form-control" name="id_sekolah" required value="<?= $idSekolah ?>" placeholder="Tahun Ajaran">
                                 <div class="row" hidden>
                                     <div class="col-lg-6">
                                         <div class="mb-3">
@@ -604,6 +608,7 @@
 
     $(document).ready(function() {
         let path = window.location.pathname.split('/');
+        let sekolah = path[path.length - 5];
         let angkatan = path[path.length - 3];
         let kelas = path[path.length - 1];
 
@@ -611,7 +616,7 @@
             "processing": true,
             "serverSide": true,
             "ajax": {
-                "url": "<?= site_url('/kelas/get-perkelas-ajax/') ?>" + angkatan + "/" + kelas,
+                "url": "<?= site_url('/kelas/admin-get-perkelas-ajax/') ?>" + sekolah + "/" + angkatan + "/" + kelas,
                 "type": "GET",
                 "data": function(d) {
                     d.angkatan = $('#dropdown-angkatan').attr('data-selected'); // Tambahkan parameter angkatan

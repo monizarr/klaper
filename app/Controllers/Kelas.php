@@ -295,4 +295,69 @@ class Kelas extends BaseController
         ];
         return $this->response->setJSON($data);
     }
+
+    public function getKelasSiswaByKelasAdmin($idSekolah, $angkatan, $kelas)
+    {
+        $mKelas = new ModelKelas();
+
+        // Ambil parameter dari request DataTables
+        $start = $this->request->getVar('start');
+        $length = $this->request->getVar('length');
+        $draw = $this->request->getVar('draw');
+        $searchValue = $this->request->getVar('search')['value'] ?? '';
+        $order = $this->request->getVar('order')[0];
+
+        $mAngkatan = new \App\Models\Angkatan();
+        $tahunMasuk = $mAngkatan->where('angkatan', $angkatan)->first()['id'];
+
+        // Query builder
+        $builder = $mKelas->builder();
+
+        // Subquery untuk mendapatkan kelas terbaru untuk setiap siswa
+        $subQuery = $mKelas->builder()
+            ->select('id_siswa, MAX(kelas) as max_kelas')
+            ->where('id_sekolah', $idSekolah)
+            ->groupBy('id_siswa')
+            ->getCompiledSelect();
+
+        $subQueryMaxTa = $mKelas->builder()
+            ->select('id_siswa, MAX(ta) as max_ta')
+            ->where('id_sekolah', $idSekolah)
+            ->groupBy('id_siswa')
+            ->getCompiledSelect();
+
+        // Join dengan subquery untuk mendapatkan data kelas terbaru
+        $builder->select('kelas.id, kelas.kelas,  siswa.nama, siswa.nis, siswa.id as siswa_id, angkatan.angkatan as ta');
+        $builder->join('siswa', 'siswa.id = kelas.id_siswa');
+        $builder->join("($subQuery) as latest_kelas", 'latest_kelas.id_siswa = kelas.id_siswa AND latest_kelas.max_kelas = kelas.kelas');
+        $builder->join("($subQueryMaxTa) as latest_ta", 'latest_ta.id_siswa = kelas.id_siswa AND latest_ta.max_ta = kelas.ta');
+        $builder->join('angkatan', 'angkatan.id = kelas.ta');
+
+        $builder->where('kelas.id_sekolah', $idSekolah);
+        $builder->where('kelas.kelas', $kelas);
+        $builder->where('siswa.masuk', $tahunMasuk);
+
+        if (!empty($searchValue)) {
+            $builder->groupStart();
+            $builder->like('siswa.nama', $searchValue);
+            $builder->orLike('siswa.nis', $searchValue);
+            $builder->orLike('kelas.kelas', $searchValue);
+            $builder->orLike('kelas.ta', $searchValue);
+            $builder->groupEnd();
+        }
+
+        $totalKelas = $mKelas->countAllResults(false);
+
+        $builder->orderBy('kelas.kelas', $order['dir']);
+
+        $data = $builder->limit($length, $start)->get()->getResultArray();
+        $totalFiltered = count($data);
+        $data = [
+            'draw' => $draw,
+            'recordsTotal' => $totalKelas,
+            'recordsFiltered' => $totalFiltered,
+            'data' => $data
+        ];
+        return $this->response->setJSON($data);
+    }
 }

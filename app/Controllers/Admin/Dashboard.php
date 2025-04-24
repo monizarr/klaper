@@ -171,6 +171,31 @@ class Dashboard extends BaseController
         return view('layouts/v_wrapper', $data);
     }
 
+    public function mSiswaKelas($idSekolah, $angkatan, $kelas)
+    {
+        $sekolah = $this->mSekolah->find($idSekolah);
+        $angkatan = $this->mAngkatan->select('angkatan.*')->where('angkatan', $angkatan)->where('id_sekolah', $idSekolah)->first();
+
+        $this->mSiswa->select('siswa.*');
+        $this->mSiswa->select('sekolah.nama as nama_sekolah');
+        $this->mSiswa->join('sekolah', 'sekolah.id = siswa.id_sekolah');
+        $this->mSiswa->where('siswa.masuk', $angkatan['id']);
+        $this->mSiswa->where('siswa.id_sekolah', $idSekolah);
+        $dataSiswa = $this->mSiswa->findAll();
+
+        $data = [
+            'title' => 'Manajemen Siswa',
+            'content' => 'admin/siswa/v_kelas',
+            'apath' => 'mSiswa',
+            'user' => session()->get('user'),
+            'sekolah' => $sekolah,
+            'angkatan' => $angkatan,
+            'siswa' => $dataSiswa
+        ];
+
+        return view('layouts/v_wrapper', $data);
+    }
+
     public function getSiswa()
     {
         $model = new ModelSiswa();
