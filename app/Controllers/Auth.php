@@ -88,7 +88,7 @@ class Auth extends BaseController
     public function sekolahLogout()
     {
         session()->destroy();
-        return redirect()->to('/auth/auth/sekolah/login');
+        return redirect()->to('/auth/sekolah/login');
     }
 
     public function adminLogout()
