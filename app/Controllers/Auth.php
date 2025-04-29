@@ -65,7 +65,7 @@ class Auth extends BaseController
         $user = $userModel->where('username', $username)->first();
 
         if (!isset($user)) {
-            return redirect()->to('/admin/login')->withInput()->with('error', 'Username tidak ditemukan');
+            return redirect()->to('/auth/admin/login')->withInput()->with('error', 'Username tidak ditemukan');
         }
 
         if ($user) {
@@ -82,7 +82,7 @@ class Auth extends BaseController
             }
         }
 
-        return redirect()->to('/admin/login')->withInput()->with('error', 'Login failed');
+        return redirect()->to('/auth/admin/login')->withInput()->with('error', 'Login failed');
     }
 
     public function sekolahLogout()

@@ -33,7 +33,7 @@
     $(document).ready(function() {
         // Fetch data from the API
         $.ajax({
-            url: '<?= base_url('/siswa?id_sekolah=' . session()->get('user')['sekolah']['id']) ?>',
+            url: '<?= base_url('/siswa/angkatan-sekolah') ?>',
             method: 'GET',
             success: function(response) {
                 // Process data to group by 'masuk'

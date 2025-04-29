@@ -28,6 +28,7 @@ $routes->group('angkatan', function ($routes) {
 
 $routes->group('siswa', function ($routes) {
     $routes->get('/', 'Siswa::index');
+    $routes->get('angkatan-sekolah', 'Siswa::siswaAngkatanSekolah');
     $routes->get('search', 'Siswa::search');
     $routes->get('show/(:num)', 'Siswa::show/$1');
     $routes->get('get-siswa-angkatan/(:num)', 'Siswa::getSiswaAngkatan/$1');
