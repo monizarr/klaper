@@ -36,18 +36,6 @@
             url: '<?= base_url("/siswa/angkatan-sekolah") ?>',
             method: 'GET',
             success: function(response) {
-                // Example response structure:
-                // {
-                //     "SDN 1": {
-                //         "2020": { "L": "1", "P": "1" },
-                //         "2021": { "L": "2", "P": "1" }
-                //     },
-                //     "SDN 2": {
-                //         "2020": { "L": "1" },
-                //         "2022": { "P": "1" }
-                //     }
-                // }
-
                 // Prepare data for the chart
                 const labels = []; // Array to hold unique years
                 const datasets = []; // Array to hold datasets for each school
