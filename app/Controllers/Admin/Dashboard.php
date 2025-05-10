@@ -32,7 +32,7 @@ class Dashboard extends BaseController
     {
         $data = [
             'title' => 'Dashboard',
-            'content' => 'adminapp/v_index'
+            'content' => 'admin/v_index'
         ];
         // dd(session()->get('user'));
         return view('layouts/v_wrapper', $data);

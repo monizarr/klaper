@@ -33,22 +33,34 @@ class Siswa extends BaseController
 
     public function siswaAngkatanSekolah()
     {
-        $mSiswa = new ModelSiswa();
-        $builder = $mSiswa->builder();
+        $siswaModel = new ModelSiswa();
+        $builder = $siswaModel->builder();
         $builder->select('angkatan.angkatan as tahun, siswa.jk, COUNT(siswa.id) as jumlah, sekolah.nama as nama_sekolah');
         $builder->join('angkatan', 'angkatan.id = siswa.masuk');
         $builder->join('sekolah', 'sekolah.id = siswa.id_sekolah');
         $builder->groupBy(['angkatan.angkatan', 'siswa.jk', 'sekolah.nama']);
         $builder->orderBy('angkatan.angkatan', 'ASC');
         $result = $builder->get()->getResultArray();
-        dd($result);
-        $sekolah = [];
-        $angkatan = [];
+
+        $output = [];
+
         foreach ($result as $row) {
-            $angkatan[$row['tahun']][$row['jk']] = $row['jumlah'];
+            $sekolah = $row['nama_sekolah'];
+            $tahun = $row['tahun'];
+            $jk = $row['jk'];
+            $jumlah = (string)$row['jumlah']; // agar sesuai contoh JSON
+
+            if (!isset($output[$sekolah])) {
+                $output[$sekolah] = [];
+            }
+            if (!isset($output[$sekolah][$tahun])) {
+                $output[$sekolah][$tahun] = [];
+            }
+
+            $output[$sekolah][$tahun][$jk] = $jumlah;
         }
 
-        return $this->response->setJSON($angkatan);
+        return $this->response->setJSON($output);
     }
 
     public function show($id)

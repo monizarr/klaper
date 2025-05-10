@@ -36,18 +36,6 @@
             url: '<?= base_url('/siswa') ?>',
             method: 'GET',
             success: function(response) {
-                // Example response structure:
-                // {
-                //     "2020": {
-                //         "L": "1",
-                //         "P": "1"
-                //     },
-                //     "2021": {
-                //         "L": "2",
-                //         "P": "3"
-                //     }
-                // }
-
                 // Parse the response
                 const labels = Object.keys(response);
                 const maleData = labels.map(year => parseInt(response[year].L));
