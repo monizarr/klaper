@@ -200,7 +200,7 @@ class Dashboard extends BaseController
         $data = [
             'title' => 'Data Akademis Angkatan ' . $angkatanMasuk['angkatan'] . ' Kelas ' . $kelas,
             'content' => 'sekolah/akademis/v_kelas',
-            'apath' => 'mSiswa',
+            'apath' => 'mAkademis',
             'user' => $user,
             'siswa' => $siswa,
             'angkatan' => $angkatan,
@@ -240,7 +240,7 @@ class Dashboard extends BaseController
         $data = [
             'title' => 'Manajemen Data Prestasi',
             'content' => 'sekolah/prestasi/v_index',
-            'apath' => 'mSiswa',
+            'apath' => 'mPrestasi',
             'siswa' => $siswa,
             'user' => $user,
             'angkatan' => $resTahun
