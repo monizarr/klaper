@@ -97,8 +97,11 @@ $routes->group('admin', function ($routes) {
         $routes->get('(:num)/angkatan/(:num)/kelas/(:num)', 'Admin\Dashboard::mSiswaKelas/$1/$2/$3');
     });
     $routes->get('siswa', 'Admin\Dashboard::mSiswa');
-    $routes->get('akademis', 'Admin\Dashboard::mSiswa');
-    $routes->get('prestasi', 'Admin\Dashboard::mSiswa');
+    $routes->group('prestasi', function ($routes) {
+        $routes->get('', 'Admin\Dashboard::mPrestasi');
+        $routes->get('(:num)/angkatan', 'Admin\Dashboard::mPrestasiSekolah/$1');
+        $routes->get('prestasi/(:num)/angkatan/(:num)', 'Admin\Dashboard::mPrestasiSekolahAngkatan/$1/$2');
+    });
     $routes->get('get-siswa', 'Admin\Dashboard::getSiswa');
     $routes->get('get-sekolah', 'Admin\Dashboard::getSekolah');
     $routes->post('edit-sekolah', 'Admin\Dashboard::editSekolah');

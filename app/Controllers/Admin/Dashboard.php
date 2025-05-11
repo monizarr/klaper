@@ -196,6 +196,96 @@ class Dashboard extends BaseController
         return view('layouts/v_wrapper', $data);
     }
 
+    public function mPrestasi()
+    {
+        $sekolahs = $this->mSekolah->findAll();
+        $this->mSiswa->select('siswa.*');
+        $this->mSiswa->select('sekolah.nama as nama_sekolah');
+        $this->mSiswa->join('sekolah', 'sekolah.id = siswa.id_sekolah');
+        $dataSekolah = $this->mSiswa->findAll();
+
+        $dataSekolah = [];
+        foreach ($sekolahs as $s) {
+            $jmlSiswa = $this->mPrestasi->where('id_sekolah', $s['id'])->countAllResults();
+            $dataSekolah[] = [
+                'id' => $s['id'],
+                'nama' => $s['nama'],
+                'jumlah_siswa' => $jmlSiswa
+            ];
+        }
+
+        $data = [
+            'title' => 'Prestasi Siswa',
+            'content' => 'admin/prestasi/v_index',
+            'apath' => 'mSiswa',
+            'user' => session()->get('user'),
+            'sekolah' => $dataSekolah,
+        ];
+
+        return view('layouts/v_wrapper', $data);
+    }
+
+    public function mPrestasiSekolah($idSekolah)
+    {
+        $sekolah = $this->mSekolah->find($idSekolah);
+        $angkatan = $this->mAngkatan->select('angkatan.*')->where('id_sekolah', $idSekolah)->distinct()->orderBy('angkatan', 'DESC')->findAll();
+        $countSiswa = [];
+        foreach ($angkatan as $a) {
+            $mPrestasi = $this->mPrestasi->builder();
+            $mPrestasi->where('id_sekolah', $idSekolah);
+            $mPrestasi->where('tanggal_prestasi >=', $a['angkatan'] . '-01-01');
+            $mPrestasi->where('tanggal_prestasi <=', $a['angkatan'] . '-12-31');
+
+            $jmlPrestasi = $mPrestasi->countAllResults();
+
+            $countSiswa[] = [
+                'id' => $a['id'],
+                'angkatan' => $a['angkatan'],
+                'jumlah_siswa' => $jmlPrestasi
+            ];
+        }
+
+        $data = [
+            'title' => 'Manajemen Angkatan',
+            'content' => 'admin/prestasi/v_kelas',
+            'apath' => 'mSiswa',
+            'user' => session()->get('user'),
+            'sekolah' => $sekolah,
+            'angkatan' => $countSiswa
+        ];
+
+        return view('layouts/v_wrapper', $data);
+    }
+
+    public function mPrestasiSekolahAngkatan($idSekolah, $angkatan)
+    {
+        $sekolah = $this->mSekolah->find($idSekolah);
+        $angkatan = $this->mAngkatan->select('angkatan.*')->where('id_sekolah', $idSekolah)->findAll();
+
+        $prestasi = $this->mPrestasi->builder();
+        $prestasi->select('prestasi.*, siswa.nama as nama_siswa, siswa.nis, siswa.jk, siswa.masuk');
+        $prestasi->join('siswa', 'siswa.id = prestasi.id_siswa');
+        $prestasi->where('siswa.id_sekolah', $idSekolah);
+        if ($angkatan != null) {
+            $prestasi->where('prestasi.tanggal_prestasi >=', $angkatan . '-01-01');
+            $prestasi->where('prestasi.tanggal_prestasi <=', $angkatan . '-12-31');
+        }
+        $prestasi->orderBy('siswa.nama', 'ASC');
+        $dataPrestasi = $prestasi->get()->getResultArray();
+        dd($dataPrestasi);
+        $data = [];
+        foreach ($dataPrestasi as $p) {
+            $data[$p->masuk][] = [
+                'id' => $p->id,
+                'nis' => $p->nis,
+                'nama' => $p->nama_siswa,
+                'prestasi' => $p->prestasi,
+                'angkatan' => $p->angkatan,
+                'jk' => $p->jk
+            ];
+        }
+    }
+
     public function getSiswa()
     {
         $model = new ModelSiswa();
