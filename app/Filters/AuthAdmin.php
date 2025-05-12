@@ -25,7 +25,10 @@ class AuthAdmin implements FilterInterface
      */
     public function before(RequestInterface $request, $arguments = null)
     {
-        //
+        if (session()->get('user') == null) {
+            session()->setFlashdata("Masalah authentikasi");
+            return redirect()->to('/auth/admin/login');
+        }
     }
 
     /**

@@ -98,6 +98,58 @@ class Prestasi extends BaseController
         return $this->response->setJSON($response);
     }
 
+    public function getPrestasiSekolahAngkatan($id_sekolah, $angkatan)
+    {
+
+        // Ambil parameter dari request DataTables
+        $start = $this->request->getVar('start');
+        $length = $this->request->getVar('length');
+        $draw = $this->request->getVar('draw');
+        $searchValue = $this->request->getVar('search')['value'] ?? '';
+        $order = $this->request->getVar('order')[0];
+
+        // konversi $angkatan ke tipe date dengan bulan 01 dan tanggal 01
+        $awalAngkatan = date('Y-m-d', strtotime($angkatan . '-01-01'));
+        $akhirAngkatan = date('Y-m-d', strtotime($angkatan . '-12-31'));
+
+        // Query builder
+        $mPrestasi = new ModelsPrestasi();
+        $builder = $mPrestasi->builder();
+        $builder->select('prestasi.*, siswa.nama, siswa.nis, siswa.masuk');
+        $builder->join('siswa', 'siswa.id = prestasi.id_siswa', 'left');
+        $builder->where('prestasi.id_sekolah', $id_sekolah);
+        // range data sesuai prestasi.tanggal_prestasi
+        $builder->where('prestasi.tanggal_prestasi >=', $awalAngkatan);
+        $builder->where('prestasi.tanggal_prestasi <=', $akhirAngkatan);
+
+        // Filter pencarian jika ada
+        if (!empty($searchValue)) {
+            $builder->like('siswa.nama', $searchValue); // Misalnya pencarian berdasarkan nama
+        }
+
+        // Hitung total record sebelum limit
+        $totalRecords = $builder->countAllResults(false);
+
+        // order
+        $builder->orderBy('nama', $order['dir']);
+
+        // Ambil data dengan limit dan offset
+        $data = $builder->limit($length, $start)->get()->getResult();
+
+        // Hitung total record yang sesuai filter pencarian
+        $totalFilteredRecords = count($data);
+
+        // Format data untuk DataTables
+        $response = [
+            'draw' => intval($draw),
+            'recordsTotal' => $totalRecords,
+            'recordsFiltered' => $totalFilteredRecords,
+            'data' => $data
+        ];
+
+        return $this->response->setJSON($response);
+    }
+
     public function update()
     {
         $id = $this->request->getVar('id');

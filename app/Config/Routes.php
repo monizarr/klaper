@@ -54,6 +54,7 @@ $routes->group('prestasi', function ($routes) {
     $routes->post('delete/(:num)', 'Prestasi::delete/$1');
     $routes->group('ajax', function ($routes) {
         $routes->get('get/(:num)', 'Prestasi::getPrestasiAjax/$1');
+        $routes->get('get-sekolah/(:num)/angkatan/(:num)', 'Prestasi::getPrestasiSekolahAngkatan/$1/$2');
     });
 });
 
@@ -87,7 +88,7 @@ $routes->group('sekolah', ['filter' => 'authsekolah'], function ($routes) {
     $routes->get('get-csv', 'Sekolah\Dashboard::getCsv');
 });
 
-$routes->group('admin', function ($routes) {
+$routes->group('admin', ['filter' => 'authadmin'], function ($routes) {
     $routes->get('/', 'Admin\Dashboard::index');
     $routes->get('dashboard', 'Admin\Dashboard::index');
     $routes->group('sekolah', function ($routes) {
@@ -100,7 +101,7 @@ $routes->group('admin', function ($routes) {
     $routes->group('prestasi', function ($routes) {
         $routes->get('', 'Admin\Dashboard::mPrestasi');
         $routes->get('(:num)/angkatan', 'Admin\Dashboard::mPrestasiSekolah/$1');
-        $routes->get('prestasi/(:num)/angkatan/(:num)', 'Admin\Dashboard::mPrestasiSekolahAngkatan/$1/$2');
+        $routes->get('(:num)/angkatan/(:num)', 'Admin\Dashboard::mPrestasiSekolahAngkatan/$1/$2');
     });
     $routes->get('get-siswa', 'Admin\Dashboard::getSiswa');
     $routes->get('get-sekolah', 'Admin\Dashboard::getSekolah');
