@@ -106,7 +106,7 @@
     </div>
 </div>
 
-<!-- Modal tambah siswa -->
+<!-- Modal tambah sekolah -->
 <div class="modal modal-blur fade" id="modal-siswa" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <form action="<?= site_url('/admin/add-sekolah') ?>" method="post" class="modal-content">
@@ -130,6 +130,10 @@
                 <div class="mb-3">
                     <label class="form-label">Telp</label>
                     <input type="text" class="form-control" name="telp">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">NPSN</label>
+                    <input type="number" class="form-control" name="npsn">
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Email</label>
@@ -196,6 +200,10 @@
                         <small>
                             *Kosongkan jika tidak ingin mengganti password
                         </small>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">NPSN</label>
+                        <input type="text" class="form-control" name="npsn" value="<?= $s['npsn'] ?>">
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Telp</label>

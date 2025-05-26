@@ -69,6 +69,7 @@ class Dashboard extends BaseController
         $password = $this->request->getPost('password');
         $alamat = $this->request->getPost('alamat');
         $email = $this->request->getPost('email');
+        $npsn = $this->request->getPost('npsn');
         $telp = $this->request->getPost('telp');
         $kepsek = $this->request->getPost('kepsek');
         $akreditasi = $this->request->getPost('akreditasi');
@@ -79,6 +80,7 @@ class Dashboard extends BaseController
             'username' => $username,
             'password' => password_hash($password, PASSWORD_DEFAULT),
             'email' => $email,
+            'npsn' => $npsn,
             'alamat' => $alamat,
             'telp' => $telp,
             'kepsek' => $kepsek,
@@ -400,6 +402,7 @@ class Dashboard extends BaseController
             'password' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
             'alamat' => $this->request->getPost('alamat'),
             'telp' => $this->request->getPost('telp'),
+            'npsn' => $this->request->getPost('npsn'),
             'email' => $this->request->getPost('email'),
             'kepsek' => $this->request->getPost('kepsek'),
             'akreditasi' => $this->request->getPost('akreditasi'),
