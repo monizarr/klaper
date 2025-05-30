@@ -487,6 +487,8 @@ class Dashboard extends BaseController
         $existingData = $siswa->where('id_sekolah', session()->get('user')['sekolah']['id'])->findAll();
         $existingNis = array_column($existingData, 'nis');
 
+        $taAktifBulk = '';
+
 
         foreach ($csvData as $row) {
             if (!in_array($row[0], $existingNis)) {
@@ -498,23 +500,57 @@ class Dashboard extends BaseController
                     'tempat_lahir' => $row[3],
                     'tgl_lahir' => $row[4],
                     'orang_tua' => $row[5],
-                    'masuk' => $row[6],
+                    // 'masuk' => $row[6],
                     'keluar' => $row[7],
                     'created_at' => date('Y-m-d H:i:s')
                 ];
 
-                $insiswa = $siswa->insert($data);
+                $taAktif = $this->mAngkatan->where('id_sekolah', session()->get('user')['sekolah']['id'])->where('status', '1')->where('angkatan', $row[6])->first();
 
-                if ($insiswa) {
-                    $id_siswa = $siswa->insertID();
-                    $dataKelas = [
+                if ($taAktif) {
+                    $data['masuk'] = $taAktif['id'];
+                } else {
+                    // insert angkatan baru
+                    $insertA = $this->mAngkatan->insert([
                         'id_sekolah' => session()->get('user')['sekolah']['id'],
-                        'id_siswa' => $id_siswa,
-                        'kelas' => 1,
-                        'ta' => $row[6],
+                        'angkatan' => $row[6],
+                        'deskripsi' => 'Angkatan ' . $row[6],
                         'created_at' => date('Y-m-d H:i:s')
-                    ];
-                    $kelas->insert($dataKelas);
+                    ]);
+
+                    $taLama = $this->mAngkatan->where('id_sekolah', session()->get('user')['sekolah']['id'])->where('status', '1')->first();
+                    if ($taLama) {
+                        $this->mAngkatan->update($taLama['id'], ['status' => '0']);
+                    }
+
+                    $taBaru = $this->mAngkatan->where('id_sekolah', session()->get('user')['sekolah']['id'])->where('angkatan', $row[6])->first();
+                    if ($taBaru) {
+                        $this->mAngkatan->update($taBaru['id'], ['status' => '1']);
+                    } else {
+                        session()->setFlashdata('error', 'Gagal menambahkan angkatan baru');
+                        return redirect()->back()->withInput();
+                    }
+
+                    if ($insertA) {
+                        $data['masuk'] = $this->mAngkatan->where('id_sekolah', session()->get('user')['sekolah']['id'])->where('angkatan', $row[6])->first()['id'];
+                    } else {
+                        session()->setFlashdata('error', 'Gagal menambahkan data siswa angkatan baru');
+                        return redirect()->back()->withInput();
+                    }
+
+                    $insiswa = $siswa->insert($data);
+
+                    if ($insiswa) {
+                        $id_siswa = $siswa->insertID();
+                        $dataKelas = [
+                            'id_sekolah' => session()->get('user')['sekolah']['id'],
+                            'id_siswa' => $id_siswa,
+                            'kelas' => 1,
+                            'ta' => $data['masuk'],
+                            'created_at' => date('Y-m-d H:i:s')
+                        ];
+                        $kelas->insert($dataKelas);
+                    }
                 }
             }
         }
