@@ -52,7 +52,7 @@ class Dashboard extends BaseController
         $builder->orderBy('siswa.nama', 'ASC');
         $siswa = $builder->get()->getResultArray();
 
-        $tahun = $this->mAngkatan->where('id_sekolah', $idUser)->distinct()->orderBy('angkatan', 'DESC')->findAll();
+        $tahun = $this->mAngkatan->where('id_sekolah', $idUser)->orderBy('angkatan', 'DESC')->findAll();
 
         $resTahun = [];
         foreach ($tahun as $t) {
@@ -481,16 +481,19 @@ class Dashboard extends BaseController
             }, file($file));
         }
 
-        $header = array_shift($csvData);
+        // remove first row 
+        array_shift($csvData);
+
 
         // exisiting data
         $existingData = $siswa->where('id_sekolah', session()->get('user')['sekolah']['id'])->findAll();
         $existingNis = array_column($existingData, 'nis');
 
-        $taAktifBulk = '';
-
-
         foreach ($csvData as $row) {
+            if (!is_numeric($row[0])) {
+                continue;
+            }
+
             if (!in_array($row[0], $existingNis)) {
                 $data = [
                     'id_sekolah' => session()->get('user')['sekolah']['id'],
@@ -505,7 +508,7 @@ class Dashboard extends BaseController
                     'created_at' => date('Y-m-d H:i:s')
                 ];
 
-                $taAktif = $this->mAngkatan->where('id_sekolah', session()->get('user')['sekolah']['id'])->where('status', '1')->where('angkatan', $row[6])->first();
+                $taAktif = $this->mAngkatan->where('id_sekolah', session()->get('user')['sekolah']['id'])->where('angkatan', $row[6])->first();
 
                 if ($taAktif) {
                     $data['masuk'] = $taAktif['id'];
@@ -517,6 +520,13 @@ class Dashboard extends BaseController
                         'deskripsi' => 'Angkatan ' . $row[6],
                         'created_at' => date('Y-m-d H:i:s')
                     ]);
+
+                    if ($insertA) {
+                        $data['masuk'] = $this->mAngkatan->where('id_sekolah', session()->get('user')['sekolah']['id'])->where('angkatan', $row[6])->first()['id'];
+                    } else {
+                        session()->setFlashdata('error', 'Gagal menambahkan data siswa angkatan baru');
+                        return redirect()->back()->withInput();
+                    }
 
                     $taLama = $this->mAngkatan->where('id_sekolah', session()->get('user')['sekolah']['id'])->where('status', '1')->first();
                     if ($taLama) {
@@ -530,27 +540,22 @@ class Dashboard extends BaseController
                         session()->setFlashdata('error', 'Gagal menambahkan angkatan baru');
                         return redirect()->back()->withInput();
                     }
+                }
 
-                    if ($insertA) {
-                        $data['masuk'] = $this->mAngkatan->where('id_sekolah', session()->get('user')['sekolah']['id'])->where('angkatan', $row[6])->first()['id'];
-                    } else {
-                        session()->setFlashdata('error', 'Gagal menambahkan data siswa angkatan baru');
-                        return redirect()->back()->withInput();
-                    }
 
-                    $insiswa = $siswa->insert($data);
+                $insiswa = $siswa->insert($data);
 
-                    if ($insiswa) {
-                        $id_siswa = $siswa->insertID();
-                        $dataKelas = [
-                            'id_sekolah' => session()->get('user')['sekolah']['id'],
-                            'id_siswa' => $id_siswa,
-                            'kelas' => 1,
-                            'ta' => $data['masuk'],
-                            'created_at' => date('Y-m-d H:i:s')
-                        ];
-                        $kelas->insert($dataKelas);
-                    }
+                if ($insiswa) {
+                    $id_siswa = $siswa->insertID();
+                    $dataKelas = [
+                        'id_sekolah' => session()->get('user')['sekolah']['id'],
+                        'id_siswa' => $id_siswa,
+                        'kelas' => 1,
+                        'ta' => $data['masuk'],
+                        'created_at' => date('Y-m-d H:i:s')
+                    ];
+
+                    $kelas->insert($dataKelas);
                 }
             }
         }
