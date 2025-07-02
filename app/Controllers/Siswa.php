@@ -275,4 +275,51 @@ class Siswa extends BaseController
         // Mengembalikan hasil dalam format JSON
         return $this->response->setJSON($results);
     }
+
+
+    // cetak data siswa : biodata dan riwayat akademis
+    public function cetak($id)
+    {
+        $siswaModel = new ModelSiswa();
+        $siswa = $siswaModel->find($id);
+
+        if (!$siswa) {
+            return redirect()->back()->with('error', 'Data siswa tidak ditemukan');
+        }
+
+        // Load view untuk mencetak data siswa
+        $data = [
+            'siswa' => $siswa,
+            'sekolah' => session()->get('user')['sekolah'],
+            'angkatan' => $siswaModel->select('angkatan.angkatan as nama_angkatan')
+                ->join('angkatan', 'angkatan.id = siswa.masuk')
+                ->where('siswa.id', $id)
+                ->first(),
+            'kelas' => (new ModelKelas())->select('kelas.kelas')
+                ->join('siswa', 'siswa.id = kelas.id_siswa')
+                ->where('siswa.id', $id)
+                ->first(),
+            'prestasi' => (new \App\Models\Prestasi())->select('prestasi.*')
+                ->join('siswa', 'siswa.id = prestasi.id_siswa')
+                ->where('siswa.id', $id)
+                ->findAll(),
+            'riwayat' => (new ModelKelas())->select('kelas.kelas, kelas.ta as tahun, angkatan.angkatan as angkatan')
+                ->join('siswa', 'siswa.id = kelas.id_siswa')
+                ->join('angkatan', 'angkatan.id = kelas.ta')
+                ->where('siswa.id', $id)
+                ->orderBy('tahun', 'ASC')
+                ->findAll()
+        ];
+
+        // dd($data); // Uncomment this line to debug data before printing
+
+        $html = view('sekolah/siswa/v_cetak', $data);
+        $dompdf = new \Dompdf\Dompdf();
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+        $dompdf->stream('biodata_siswa_' . $siswa['nama'] . '.pdf', [
+            'Attachment' => false // Set to true to force download
+        ]);
+    }
 }
