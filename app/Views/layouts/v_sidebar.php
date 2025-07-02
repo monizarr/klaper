@@ -240,7 +240,7 @@
                         </span>
                     </a>
                 </li>
-                <!-- <li class="nav-item <?= $active == 'akademis'  ? 'active' : '' ?>">
+                <li class="nav-item <?= $active == 'akademis'  ? 'active' : '' ?>">
                     <a class="nav-link" href="<?= $role == 'admin' ? base_url('admin/akademis') : base_url('sekolah/akademis') ?>">
                         <span class="nav-link-icon d-md-none d-lg-inline-block">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-book">
@@ -256,7 +256,7 @@
                             Kelola Data Akademis
                         </span>
                     </a>
-                </li> -->
+                </li>
                 <li class="nav-item <?= $active == 'prestasi'  ? 'active' : '' ?>">
                     <a class="nav-link" href="<?= $role == 'admin' ? base_url('admin/prestasi') : base_url('sekolah/prestasi') ?>">
                         <span class="nav-link-icon d-md-none d-lg-inline-block">

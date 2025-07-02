@@ -108,15 +108,14 @@
             <div class="col-12 col-md-9 col-lg-7 min-h-lg-screen d-flex flex-column justify-content-center py-lg-16 px-lg-20 position-relative">
                 <div class="row h-100">
                     <div class="col-lg-10 col-md-9 col-xl-7 mx-auto">
-                        <div class="text-center mb-12">
-                            <!-- <a class="d-inline-block" href="#">
-                            <img src="https://preview.webpixels.io/web/img/logos/clever-primary-sm.svg" class="h-12" alt="...">
-                		        </a> -->
-                            <span class="d-inline-block d-lg-block h1 mb-lg-6 me-3">👋</span>
+                        <div class="text-center mb-16">
+                            <div class="logo mb-4">
+                                <img src="<?= base_url('assets/logo.png') ?>" alt="Klaper Logo" class="h-24">
+                            </div>
                             <h1 class="ls-tight font-bolder h2">
                                 Masuk
                             </h1>
-                            <p class="mt-2">Aplikasi Klaper Siswa</p>
+                            <p class="mt-2 fw-bold">APLIKASI BUKU KLAPER SISWA SEKOLAH KABUPATEN PEKALONGAN</p>
                         </div>
                         <form class="" method="post"
                             action="<?= route_to('login') ?>">
