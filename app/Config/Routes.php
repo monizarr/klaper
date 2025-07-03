@@ -35,6 +35,7 @@ $routes->group('siswa', function ($routes) {
     $routes->get('get-kelas-siswa/(:num)', 'Siswa::getKelasSiswa/$1');
     $routes->post('del-siswa/(:num)', 'Siswa::deleteSiswa/$1');
     $routes->get('cetak/(:num)', 'Siswa::cetak/$1');
+    $routes->get('cetak/(:num)/(:num)', 'Siswa::adminCetak/$1/$2');
 });
 
 $routes->group('kelas', function ($routes) {
