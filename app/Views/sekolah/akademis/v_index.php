@@ -55,7 +55,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header ">
-                        <h3 class="card-title">Pilih angkatan</h3>
+                        <h3 class="card-title">Pilih Tahun Ajaran</h3>
                     </div>
                     <div class="card-body row">
                         <?php foreach ($angkatan as $a) : ?>

@@ -113,7 +113,6 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <!-- <th>No</th> -->
                             <th>Kelas</th>
                             <th>Tahun Ajaran</th>
                         </tr>
@@ -121,7 +120,6 @@
                     <tbody>
                         <?php foreach ($riwayat as $index => $data): ?>
                             <tr>
-                                <!-- <td><?= $index + 1 ?></td> -->
                                 <td><?= $data['kelas'] ?></td>
                                 <td><?= $data['angkatan'] ?></td>
                             </tr>
