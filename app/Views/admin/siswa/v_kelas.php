@@ -445,9 +445,8 @@ $idSekolah = $idSekolah[count($idSekolah) - 3];
                         data-nama="${row.nama}" 
                         data-jk="${row.jk}" 
                         data-ortu="${row.orang_tua}">
-                        Edit
-                    </a>
-                    <a href="#" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#modal-confirm-delete" data-id="${data}" data-nis="${row.nis}" data-nama="${row.nama}">Delete</a>`;
+                        Detail
+                    </a>`;
                     }
                 },
             ],
