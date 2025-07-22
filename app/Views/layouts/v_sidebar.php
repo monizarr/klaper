@@ -236,7 +236,7 @@
                             </svg>
                         </span>
                         <span class="nav-link-title">
-                            Kelola Siswa
+                            Data Siswa
                         </span>
                     </a>
                 </li>

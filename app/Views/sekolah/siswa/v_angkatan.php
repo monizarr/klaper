@@ -657,6 +657,10 @@
                     "data": "id",
                     "render": function(data, type, row) {
                         return `
+                    <a href="<?= base_url('/siswa/cetak/') ?>${data}" class="btn btn-sm btn-neutral" target="_blank">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-printer"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 8h14a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-6a2 2 0 0 1 2 -2z" /><path d="M9 18v-4a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4" /><path d="M7.5 8l-3.5 -3.5l3.5 -3.5m9.5 -1.5l3.5 -3.5l3.5 -3.5m-16.5 .5l-3.5 -3.5l-3.5 -3.5m16.5 .5l3.5 -3.5l3.5 -3.5m-16 .5l-3.5 -3.5l-3.5 -3.5m16 .5l3.5 -3.5l3.5 -3.5m-16 .5l-3.5 -3.5l-3.5 -3.5m16 .5l3.5 -3.5l3.5 -3.5"/></svg>
+                        Cetak
+                    </a>
                     <a href="#" class="btn btn-sm btn-primary" 
                         data-bs-toggle="modal" 
                         data-bs-target="#modal-edit-${data}" 
